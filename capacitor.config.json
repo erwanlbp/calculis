@@ -1,0 +1,8 @@
+{
+  "appId": "com.erwanlbp.calculis",
+  "appName": "calculis",
+  "bundledWebRuntime": false,
+  "npmClient": "npm",
+  "webDir": "www",
+  "cordova": {}
+}
