@@ -6,4 +6,9 @@
       </div>
     </ion-col>
   </ion-row>
+  <ion-row *ngIf="(number$ | async) !== null">
+    <ion-col size="1">
+      <ion-progress-bar type="determinate" [value]="progress$ | async"></ion-progress-bar>
+    </ion-col>
+  </ion-row>
 </ion-grid>

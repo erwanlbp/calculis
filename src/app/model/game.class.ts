@@ -5,8 +5,9 @@ import { map, take, tap, startWith, endWith } from 'rxjs/operators';
 export class Game {
 
     private numbers: number[] = [];
-    private config: GameConfig;
+    public config: GameConfig;
     private actualSerieSize: number;
+
     constructor(config: GameConfig) {
         this.config = config;
         console.log('game config:', this.config);

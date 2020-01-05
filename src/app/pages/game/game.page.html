@@ -9,7 +9,7 @@
 </ion-header>
 
 <ion-content>
-    <app-game-sequence *ngIf="!sequenceIsOver" [number$]="number$"></app-game-sequence>
+    <app-game-sequence *ngIf="!sequenceIsOver" [number$]="number$" [timePrinted]="game.config.timePrinted"></app-game-sequence>
     <app-game-user-answer *ngIf="sequenceIsOver && !userAnswerMessage" [answer]="game.getAnswer()" (userIsCorrect)="answered($event)"></app-game-user-answer>
     <div *ngIf="userAnswerMessage" class="ion-margin">
         {{userAnswerMessage}}

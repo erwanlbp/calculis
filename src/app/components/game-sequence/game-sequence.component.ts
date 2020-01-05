@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, interval } from 'rxjs';
+import { map, take, switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-game-sequence',
@@ -9,8 +10,20 @@ import { Observable } from 'rxjs';
 export class GameSequenceComponent implements OnInit {
 
   @Input() number$: Observable<number>;
+  @Input() timePrinted: number;
+
+  progress$: Observable<number>;
+
+  private progressTick = 10;
 
   constructor() { }
 
-  ngOnInit() { }
+  ngOnInit() {
+    if (this.timePrinted) {
+      this.progress$ = this.number$.pipe(
+        switchMap(() => interval(this.progressTick)),
+        map(i => 1 - (i / (this.timePrinted / this.progressTick))),
+      );
+    }
+  }
 }

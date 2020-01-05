@@ -23,8 +23,8 @@ export class GamePage implements OnInit {
         this.game = new Game({
             rangeMin: -5,
             rangeMax: 5,
-            serieSize: 3,
-            timePrinted: 1000,
+            serieSize: 5,
+            timePrinted: 1500,
         });
         this.number$ = this.game.getNumbers$();
         this.number$.subscribe({ complete: () => this.sequenceIsOver = true });
