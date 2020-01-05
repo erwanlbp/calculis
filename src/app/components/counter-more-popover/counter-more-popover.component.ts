@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { NavController, NavParams, PopoverController } from '@ionic/angular';
 import { UtilsService } from "../../services/utils.service";
 import { CounterService } from "../../services/counter.service";
-import { Counter } from "../../interfaces/counter";
+import { Counter } from "../../model/counter.interface";
 
 @Component({
     selector: 'app-counter-more-popover',

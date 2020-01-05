@@ -1,0 +1,18 @@
+<form *ngIf="form" [formGroup]="form" (ngSubmit)="answered()">
+
+  <ion-grid>
+    <ion-row>
+      <ion-col size="2">
+        <ion-item>
+          <ion-label position="floating">Le compte est :</ion-label>
+          <ion-input type="number" formControlName="answer"></ion-input>
+        </ion-item>
+      </ion-col>
+      <ion-col size="2">
+        <ion-button type="submit" [disabled]="!form.valid">
+          C'est mon dernier mot
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</form>

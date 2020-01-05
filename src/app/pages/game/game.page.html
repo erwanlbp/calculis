@@ -1,21 +1,17 @@
 <ion-header>
-  <ion-toolbar>
-      <ion-buttons slot="start">
-          <ion-menu-button *ngIf="!backButton"></ion-menu-button>
-      </ion-buttons>
-      <ion-title>Jeu</ion-title>
-      <ion-back-button #backButton slot="start" defaultHref="/"></ion-back-button>
-  </ion-toolbar>
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <ion-menu-button *ngIf="!backButton"></ion-menu-button>
+        </ion-buttons>
+        <ion-title>Jeu</ion-title>
+        <ion-back-button #backButton slot="start"></ion-back-button>
+    </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <ion-grid>
-      <ion-row class="ion-justify-content-center ion-align-items-center">
-          <ion-col>
-              <div>
-                  {{number$ | async}}
-              </div>
-          </ion-col>
-      </ion-row>
-  </ion-grid>
+    <app-game-sequence *ngIf="!sequenceIsOver" [number$]="number$"></app-game-sequence>
+    <app-game-user-answer *ngIf="sequenceIsOver && !userAnswerMessage" [answer]="game.getAnswer()" (userIsCorrect)="answered($event)"></app-game-user-answer>
+    <div *ngIf="userAnswerMessage" class="ion-margin">
+        {{userAnswerMessage}}
+    </div>
 </ion-content>

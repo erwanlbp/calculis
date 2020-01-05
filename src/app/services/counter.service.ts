@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
-import { Counter } from '../interfaces/counter';
+import { Counter } from '../model/counter.interface';
 import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/firestore';
 import { map, switchMap, take } from 'rxjs/operators';
 import { AuthService } from './auth.service';
