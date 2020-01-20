@@ -6,6 +6,7 @@ import { GamePage } from './game.page';
 import { RouterModule, Routes } from '@angular/router';
 import { GameSequenceComponentModule } from 'src/app/components/game-sequence/game-sequence.component.module';
 import { GameUserAnswerComponentModule } from 'src/app/components/game-user-answer/game-user-answer.component.module';
+import { AfterGameOptionsComponent } from "../../components/after-game-options/after-game-options.component";
 
 const routes: Routes = [
   {
@@ -22,6 +23,6 @@ const routes: Routes = [
     GameSequenceComponentModule,
     GameUserAnswerComponentModule,
   ],
-  declarations: [GamePage]
+    declarations: [GamePage, AfterGameOptionsComponent]
 })
 export class GamePageModule { }

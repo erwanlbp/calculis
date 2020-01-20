@@ -11,7 +11,7 @@ export class GameUserAnswerComponent implements OnInit {
   form: FormGroup;
 
   @Input() answer: number;
-  @Output() userIsCorrect: EventEmitter<boolean> = new EventEmitter();
+  @Output() answered: EventEmitter<boolean> = new EventEmitter();
 
   constructor() { }
 
@@ -19,8 +19,8 @@ export class GameUserAnswerComponent implements OnInit {
     this.form = new FormGroup({ answer: new FormControl([null, Validators.required]) });
   }
 
-  answered() {
+  submitAnswer() {
     const userAnswer = this.form.get('answer').value;
-    this.userIsCorrect.emit(userAnswer === this.answer);
+    this.answered.emit(userAnswer === this.answer);
   }
 }

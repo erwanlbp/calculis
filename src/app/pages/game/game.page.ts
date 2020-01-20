@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { GameConfig } from 'src/app/model/game-config.interface';
+import { Observable } from 'rxjs';
 import { Game } from 'src/app/model/game.class';
+import { GameService } from '../../services/game.service';
 
 @Component({
     selector: 'app-game',
@@ -13,25 +13,38 @@ export class GamePage implements OnInit {
     number$: Observable<number>;
 
     game: Game;
-    sequenceIsOver = false;
-    userAnswerMessage: string;
+    sequenceIsOver: boolean;
+    userIsCorrect: boolean;
 
-    constructor() {
+    constructor(
+        private gameService: GameService,
+    ) {
     }
 
     ngOnInit() {
-        this.game = new Game({
-            rangeMin: -5,
-            rangeMax: 5,
-            serieSize: 5,
-            timePrinted: 1500,
-        });
-        this.number$ = this.game.getNumbers$();
-        this.number$.subscribe({ complete: () => this.sequenceIsOver = true });
+        this.restart();
     }
 
-    answered(userIsCorrect: boolean) {
-        console.log('user is correct ?', userIsCorrect);
-        this.userAnswerMessage = userIsCorrect ? 'Correct !' : `Raté, la réponse était ${this.game.getAnswer()}`;
+    private startGame() {
+        console.log('current level', this.gameService.getCurrentLevel());
+        this.number$ = this.game.getNumbers$();
+        this.number$.subscribe({complete: () => this.sequenceIsOver = true});
+    }
+
+    private reset() {
+        this.sequenceIsOver = false;
+        this.userIsCorrect = null;
+    }
+
+    restart() {
+        this.reset();
+        this.game = this.gameService.newGame();
+        this.startGame();
+    }
+
+    nextGame() {
+        this.reset();
+        this.game = this.gameService.nextGameLevel();
+        this.startGame();
     }
 }

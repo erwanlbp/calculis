@@ -1,0 +1,30 @@
+<div *ngIf="userIsCorrect" class="ion-margin">
+    <ion-grid>
+        <ion-row>
+            <ion-col>
+                Correct !
+            </ion-col>
+        </ion-row>
+        <ion-row>
+            <ion-col>
+                <ion-button (click)="continueNextGame()" class="ion-margin" type="button">Niveau suivant</ion-button>
+                <ion-button (click)="restartGame()" class="ion-margin" type="button" color="warning">Recommencer une partie</ion-button>
+            </ion-col>
+        </ion-row>
+    </ion-grid>
+</div>
+
+<div *ngIf="!userIsCorrect" class="ion-margin">
+    <ion-grid>
+        <ion-row>
+            <ion-col>
+                Raté, la réponse était {{game.getAnswer()}}
+            </ion-col>
+        </ion-row>
+        <ion-row>
+            <ion-col>
+                <ion-button (click)="restartGame()" class="ion-margin" type="button">Recommencer une partie</ion-button>
+            </ion-col>
+        </ion-row>
+    </ion-grid>
+</div>

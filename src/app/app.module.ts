@@ -9,10 +9,10 @@ import { AppComponent } from './app.component';
 import { GooglePlus } from '@ionic-native/google-plus/ngx';
 import { environment } from '../environments/environment';
 import { AngularFireModule } from '@angular/fire';
-import { AngularFirestoreModule } from '@angular/fire/firestore';
-import { AngularFireAuth } from '@angular/fire/auth';
+import { AngularFireAuth, AngularFireAuthModule } from '@angular/fire/auth';
 import { registerLocaleData } from '@angular/common';
 import localeFr from '@angular/common/locales/fr';
+import { IonicStorageModule } from "@ionic/storage";
 
 registerLocaleData(localeFr, 'fr-FR');
 
@@ -22,15 +22,16 @@ registerLocaleData(localeFr, 'fr-FR');
     imports: [
         BrowserModule,
         IonicModule.forRoot(),
+        IonicStorageModule.forRoot(),
         AppRoutingModule,
         AngularFireModule.initializeApp(environment.firebaseConfig),
-        AngularFirestoreModule,
+        AngularFireAuthModule,
     ],
     providers: [
         StatusBar,
         SplashScreen,
-        { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
-        { provide: LOCALE_ID, useValue: 'fr-FR' },
+        {provide: RouteReuseStrategy, useClass: IonicRouteStrategy},
+        {provide: LOCALE_ID, useValue: 'fr-FR'},
         GooglePlus,
         AngularFireAuth,
     ],
