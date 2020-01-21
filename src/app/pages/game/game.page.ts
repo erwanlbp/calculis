@@ -16,6 +16,8 @@ export class GamePage implements OnInit {
     sequenceIsOver: boolean;
     userIsCorrect: boolean;
 
+    currentLevel: number;
+
     constructor(
         private gameService: GameService,
     ) {
@@ -26,7 +28,7 @@ export class GamePage implements OnInit {
     }
 
     private startGame() {
-        console.log('current level', this.gameService.getCurrentLevel());
+        this.currentLevel = this.gameService.getCurrentLevel();
         this.number$ = this.game.getNumbers$();
         this.number$.subscribe({complete: () => this.sequenceIsOver = true});
     }

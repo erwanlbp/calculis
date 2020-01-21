@@ -11,7 +11,7 @@ export class GameService {
 
     private rangeEvolutionFn = (lvl: number) => Math.floor(lvl * 0.20) + 5;
     private serieSizeEvolutionFn = (lvl: number) => Math.floor(lvl * 0.25) + 3;
-    private timePrintedEvolutionFn = (lvl: number) => Math.ceil(-1 * lvl * 0.25) + 2000;
+    private timePrintedEvolutionFn = (lvl: number) => Math.ceil(-1 * lvl * 0.25) + 1500;
 
     constructor(
         private storage: Storage
