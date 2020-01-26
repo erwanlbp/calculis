@@ -1,6 +1,6 @@
 import { GameConfig } from './game-config.interface';
-import { Observable, of, from, timer, interval } from 'rxjs';
-import { map, take, tap, startWith, endWith } from 'rxjs/operators';
+import { interval, Observable } from 'rxjs';
+import { map, take } from 'rxjs/operators';
 
 export class Game {
 
@@ -12,6 +12,13 @@ export class Game {
         this.config = config;
         console.log('game config:', this.config);
         this.actualSerieSize = config.serieSize + 2;
+    }
+
+    public getNumbers(): number[] {
+        if (this.numbers.length === 0) {
+            this.generateNumbers();
+        }
+        return this.numbers.slice(0, this.numbers.length - 1);
     }
 
     public getNumbers$(): Observable<number> {

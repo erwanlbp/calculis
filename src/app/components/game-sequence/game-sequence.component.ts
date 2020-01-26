@@ -14,7 +14,7 @@ export class GameSequenceComponent implements OnInit {
 
     progress$: Observable<number>;
 
-    private progressTick = 10;
+    private progressTick = 30;
 
     constructor() {
     }

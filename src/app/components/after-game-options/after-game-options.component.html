@@ -1,12 +1,12 @@
 <div *ngIf="userIsCorrect" class="ion-margin">
     <ion-grid>
-        <ion-row>
-            <ion-col>
+        <ion-row class="ion-justify-content-center">
+            <ion-col class="ion-text-center" size="12">
                 Correct !
             </ion-col>
         </ion-row>
-        <ion-row>
-            <ion-col>
+        <ion-row class="ion-justify-content-around">
+            <ion-col size="12" class="ion-text-center">
                 <ion-button (click)="continueNextGame()" class="ion-margin" type="button">Niveau suivant</ion-button>
                 <ion-button (click)="restartGame()" class="ion-margin" type="button" color="warning">Recommencer une partie</ion-button>
             </ion-col>
@@ -16,13 +16,20 @@
 
 <div *ngIf="!userIsCorrect" class="ion-margin">
     <ion-grid>
-        <ion-row>
-            <ion-col>
+        <ion-row class="ion-justify-content-center">
+            <ion-col class="ion-text-center" size="12">
                 Raté, la réponse était {{game.getAnswer()}}
             </ion-col>
         </ion-row>
-        <ion-row>
-            <ion-col>
+        <ion-row class="ion-justify-content-center">
+            <ion-col class="ion-text-center" size="12">
+                <span *ngFor="let n of game.getNumbers(); first as isFirst">
+                    {{n | signedNumber:isFirst}}
+                </span>
+            </ion-col>
+        </ion-row>
+        <ion-row class="ion-justify-content-center">
+            <ion-col class="ion-text-center" size="12">
                 <ion-button (click)="restartGame()" class="ion-margin" type="button">Recommencer une partie</ion-button>
             </ion-col>
         </ion-row>

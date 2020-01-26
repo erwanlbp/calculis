@@ -1,14 +1,12 @@
 <ion-grid>
-  <ion-row>
-    <ion-col class="ion-justify-content-center ion-align-items-center">
-      <div>
-        {{number$ | async}}
-      </div>
-    </ion-col>
-  </ion-row>
-  <ion-row *ngIf="(number$ | async) !== null">
-    <ion-col size="1">
-      <ion-progress-bar type="determinate" [value]="progress$ | async"></ion-progress-bar>
-    </ion-col>
-  </ion-row>
+    <ion-row *ngIf="(number$ | async) !== null" class="ion-justify-content-center">
+        <ion-col size="6">
+            <ion-progress-bar type="determinate" [value]="progress$ | async"></ion-progress-bar>
+        </ion-col>
+    </ion-row>
+    <ion-row class="ion-justify-content-center">
+        <ion-col class="ion-text-center" size="12">
+            {{number$ | async | signedNumber}}
+        </ion-col>
+    </ion-row>
 </ion-grid>
