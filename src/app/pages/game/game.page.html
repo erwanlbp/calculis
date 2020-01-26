@@ -4,7 +4,7 @@
             <ion-menu-button *ngIf="!backButton"></ion-menu-button>
         </ion-buttons>
         <ion-title>Jeu - Niveau {{currentLevel}}</ion-title>
-        <ion-back-button #backButton slot="start"></ion-back-button>
+        <ion-back-button #backButton [defaultHref]="ROOT_PATH" slot="start"></ion-back-button>
     </ion-toolbar>
 </ion-header>
 

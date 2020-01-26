@@ -4,6 +4,7 @@ export class RouteConstants {
 }
 
 export class RoutePathConstants {
-    public static PLAY = '/' + RouteConstants.PLAY;
-    public static HOME = '/' + RouteConstants.HOME;
+    public static ROOT = '/';
+    public static PLAY = RoutePathConstants.ROOT + RouteConstants.PLAY;
+    public static HOME = RoutePathConstants.ROOT + RouteConstants.HOME;
 }

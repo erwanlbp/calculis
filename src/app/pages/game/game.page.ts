@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Game } from 'src/app/model/game.class';
 import { GameService } from '../../services/game.service';
+import { RoutePathConstants } from '../../constants/route.constants';
 
 @Component({
     selector: 'app-game',
@@ -9,6 +10,8 @@ import { GameService } from '../../services/game.service';
     styleUrls: ['./game.page.scss'],
 })
 export class GamePage implements OnInit {
+
+    ROOT_PATH: string = RoutePathConstants.ROOT;
 
     number$: Observable<number>;
 
