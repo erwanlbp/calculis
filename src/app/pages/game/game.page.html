@@ -9,7 +9,7 @@
 </ion-header>
 
 <ion-content>
-    <app-game-sequence *ngIf="!sequenceIsOver" [number$]="number$" [timePrinted]="game.config.timePrinted"></app-game-sequence>
+    <app-game-sequence *ngIf="!sequenceIsOver" [number$]="number$" [timePrinted]="game.getConfig().timePrinted"></app-game-sequence>
     <app-game-user-answer (answered)="userIsCorrect = $event" *ngIf="sequenceIsOver && userIsCorrect === null" [answer]="game.getAnswer()"></app-game-user-answer>
     <app-after-game-options (nextGame)="nextGame()" (restart)="restart()" *ngIf="sequenceIsOver && userIsCorrect !== null" [game]="game" [userIsCorrect]="userIsCorrect"></app-after-game-options>
 </ion-content>

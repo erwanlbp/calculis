@@ -1,17 +1,21 @@
 import { GameConfig } from './game-config.interface';
-import { interval, Observable } from 'rxjs';
+import { Observable, timer } from 'rxjs';
 import { map, take } from 'rxjs/operators';
 
 export class Game {
 
     private numbers: number[] = [];
-    public config: GameConfig;
+    private config: GameConfig;
     private actualSerieSize: number;
 
     constructor(config: GameConfig) {
         this.config = config;
         console.log('game config:', this.config);
         this.actualSerieSize = config.serieSize + 2;
+    }
+
+    public getConfig(): GameConfig {
+        return this.config;
     }
 
     public getNumbers(): number[] {
@@ -26,7 +30,7 @@ export class Game {
             this.generateNumbers();
         }
         console.log('game numbers:', this.numbers);
-        return interval(this.config.timePrinted)
+        return timer(0, this.config.timePrinted)
             .pipe(
                 take(this.actualSerieSize),
                 map(i => this.numbers[i]),
