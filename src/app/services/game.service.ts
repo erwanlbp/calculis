@@ -19,11 +19,14 @@ export class GameService {
     }
 
     private generateGame(): Game {
-        return new Game({
-            range: this.rangeEvolutionFn(this.currentLevel),
-            serieSize: this.serieSizeEvolutionFn(this.currentLevel),
-            timePrinted: this.timePrintedEvolutionFn(this.currentLevel),
-        });
+        return new Game(
+            this.currentLevel,
+            {
+                range: this.rangeEvolutionFn(this.currentLevel),
+                serieSize: this.serieSizeEvolutionFn(this.currentLevel),
+                timePrinted: this.timePrintedEvolutionFn(this.currentLevel),
+            }
+        );
     }
 
     nextGameLevel(): Game {
@@ -34,9 +37,5 @@ export class GameService {
     newGame(): Game {
         this.currentLevel = 1;
         return this.generateGame();
-    }
-
-    getCurrentLevel(): number {
-        return this.currentLevel;
     }
 }

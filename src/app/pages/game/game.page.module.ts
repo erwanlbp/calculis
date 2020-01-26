@@ -8,6 +8,7 @@ import { PipesModule } from '../../pipes/pipes.module';
 import { AfterGameOptionsComponent } from './after-game-options/after-game-options.component';
 import { GameSequenceComponent } from './game-sequence/game-sequence.component';
 import { GameUserAnswerComponent } from './game-user-answer/game-user-answer.component';
+import { PreGameComponent } from './pre-game/pre-game.component';
 
 const routes: Routes = [
     {path: '', component: GamePage},
@@ -27,6 +28,7 @@ const routes: Routes = [
         GameSequenceComponent,
         GameUserAnswerComponent,
         AfterGameOptionsComponent,
+        PreGameComponent,
     ]
 })
 export class GamePageModule {

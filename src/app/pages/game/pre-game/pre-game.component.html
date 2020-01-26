@@ -1,0 +1,10 @@
+<div class="ion-padding">
+    <p>
+        Au niveau <strong>{{game.getLevel()}}</strong>
+        il va y avoir <strong>{{game.getConfig().serieSize}}</strong> nombres
+        entres <strong>0</strong> et <strong>{{game.getConfig().range}}</strong>
+        qui vont chacuns rester affichés <strong>{{game.getConfig().timePrinted}}</strong> millisecondes.
+    </p>
+    <p>Bonne chance !</p>
+    <ion-button (click)="startPlaying()">Je suis pret</ion-button>
+</div>

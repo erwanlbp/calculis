@@ -3,13 +3,14 @@
         <ion-buttons slot="start">
             <ion-menu-button *ngIf="!backButton"></ion-menu-button>
         </ion-buttons>
-        <ion-title>Jeu - Niveau {{currentLevel}}</ion-title>
+        <ion-title>Jeu - Niveau {{game.getLevel()}}</ion-title>
         <ion-back-button #backButton [defaultHref]="ROOT_PATH" slot="start"></ion-back-button>
     </ion-toolbar>
 </ion-header>
 
 <ion-content>
-    <app-game-sequence *ngIf="!sequenceIsOver" [number$]="number$" [timePrinted]="game.getConfig().timePrinted"></app-game-sequence>
-    <app-game-user-answer (answered)="userIsCorrect = $event" *ngIf="sequenceIsOver && userIsCorrect === null" [answer]="game.getAnswer()"></app-game-user-answer>
-    <app-after-game-options (nextGame)="nextGame()" (restart)="restart()" *ngIf="sequenceIsOver && userIsCorrect !== null" [game]="game" [userIsCorrect]="userIsCorrect"></app-after-game-options>
+    <app-pre-game (start)="startGame()" *ngIf="gameState === 'pre-game'" [game]="game"></app-pre-game>
+    <app-game-sequence *ngIf="gameState === 'sequence'" [number$]="number$" [timePrinted]="game.getConfig().timePrinted"></app-game-sequence>
+    <app-game-user-answer (answered)="answered($event)" *ngIf="gameState === 'user-answer'" [answer]="game.getAnswer()"></app-game-user-answer>
+    <app-after-game-options (nextGame)="nextGame()" (restart)="restart()" *ngIf="gameState === 'post-game'" [game]="game" [userIsCorrect]="userIsCorrect"></app-after-game-options>
 </ion-content>

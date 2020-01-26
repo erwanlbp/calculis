@@ -3,6 +3,7 @@ import { Observable } from 'rxjs';
 import { Game } from 'src/app/model/game.class';
 import { GameService } from '../../services/game.service';
 import { RoutePathConstants } from '../../constants/route.constants';
+import { GameState } from '../../model/game-state.enum';
 
 @Component({
     selector: 'app-game',
@@ -16,10 +17,8 @@ export class GamePage implements OnInit {
     number$: Observable<number>;
 
     game: Game;
-    sequenceIsOver: boolean;
+    gameState: GameState = GameState.PRE_GAME;
     userIsCorrect: boolean;
-
-    currentLevel: number;
 
     constructor(
         private gameService: GameService,
@@ -31,25 +30,23 @@ export class GamePage implements OnInit {
     }
 
     private startGame() {
-        this.currentLevel = this.gameService.getCurrentLevel();
+        this.gameState = GameState.SEQUENCE;
         this.number$ = this.game.getNumbers$();
-        this.number$.subscribe({complete: () => this.sequenceIsOver = true});
-    }
-
-    private reset() {
-        this.sequenceIsOver = false;
-        this.userIsCorrect = null;
+        this.number$.subscribe({complete: () => this.gameState = GameState.USER_ANSWER});
     }
 
     restart() {
-        this.reset();
         this.game = this.gameService.newGame();
-        this.startGame();
+        this.gameState = GameState.PRE_GAME;
     }
 
     nextGame() {
-        this.reset();
         this.game = this.gameService.nextGameLevel();
-        this.startGame();
+        this.gameState = GameState.PRE_GAME;
+    }
+
+    answered(userIsCorrect: boolean) {
+        this.userIsCorrect = userIsCorrect;
+        this.gameState = GameState.POST_GAME;
     }
 }

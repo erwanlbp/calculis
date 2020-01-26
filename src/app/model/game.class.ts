@@ -7,15 +7,21 @@ export class Game {
     private numbers: number[] = [];
     private config: GameConfig;
     private actualSerieSize: number;
+    private level: number;
 
-    constructor(config: GameConfig) {
+    constructor(level: number, config: GameConfig) {
+        this.level = level;
         this.config = config;
-        console.log('game config:', this.config);
+        console.log('game config for level', level, ':', this.config);
         this.actualSerieSize = config.serieSize + 2;
     }
 
     public getConfig(): GameConfig {
         return this.config;
+    }
+
+    getLevel() {
+        return this.level;
     }
 
     public getNumbers(): number[] {
