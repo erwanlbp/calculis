@@ -20,8 +20,7 @@ export class GameService {
 
     private generateGame(): Game {
         return new Game({
-            rangeMin: -1 * this.rangeEvolutionFn(this.currentLevel),
-            rangeMax: this.rangeEvolutionFn(this.currentLevel),
+            range: this.rangeEvolutionFn(this.currentLevel),
             serieSize: this.serieSizeEvolutionFn(this.currentLevel),
             timePrinted: this.timePrintedEvolutionFn(this.currentLevel),
         });

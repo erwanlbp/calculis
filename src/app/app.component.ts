@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Platform } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
-import { RouteConstants } from './constants/route.constants';
+import { RoutePathConstants } from './constants/route.constants';
 import { AuthService } from './services/auth.service';
 import { Observable } from 'rxjs';
 import * as jsonPackage from './../../package.json';
@@ -19,11 +19,8 @@ export class AppComponent implements OnInit {
     version: string = jsonPackage.version;
 
     pages = [
-        {
-            title: 'Jeu',
-            url: RouteConstants.PLAY,
-            icon: 'logo-game-controller-b'
-        },
+        {title: 'Comment jouer ?', url: RoutePathConstants.HOME, icon: 'help'},
+        {title: 'Jeu', url: RoutePathConstants.PLAY, icon: 'logo-game-controller-b'},
     ];
 
     constructor(

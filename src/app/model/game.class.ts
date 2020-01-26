@@ -40,7 +40,7 @@ export class Game {
     private generateNumbers() {
         this.numbers.push(0);
         for (let i = 0; i < this.config.serieSize; i = i + 1) {
-            this.numbers.push(Math.floor(Math.random() * (this.config.rangeMin - this.config.rangeMax)) + this.config.rangeMax + 1);
+            this.numbers.push(Math.floor(Math.random() * -2 * this.config.range) + this.config.range + 1);
         }
         this.numbers.push(0);
     }

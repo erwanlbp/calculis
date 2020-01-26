@@ -1,0 +1,31 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <ion-menu-button *ngIf="!backButton"></ion-menu-button>
+        </ion-buttons>
+        <ion-title>Comment jouer ?</ion-title>
+        <ion-back-button #backButton slot="start"></ion-back-button>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+    <h2>Calculis</h2>
+    <p>Des nombres vons s'afficher (0, +2, -3, ...)</p>
+    <h3>Un peu de calcul mental</h3>
+    <p>Faites la somme des nombres qui s'affichent, et donnez le bon compte à la fin.</p>
+    <p>Si le compte est bon, on recommence, mais avec un peu plus de difficulté.</p>
+    <p>Les paramètres qui varient sont :</p>
+    <ul>
+        <li>Le nombre de nombres dans le niveau;</li>
+        <li>L'intervalle dans lequel est choisi</li>
+        <li>Le temps que le nombre reste affiché;</li>
+    </ul>
+    <p>Au niveau <strong>1</strong>, les paramètres seront :
+        <strong>3</strong> nombres
+        entre <strong>-5</strong> et <strong>5</strong>
+        qui resteront affichés <strong>1.5</strong> secondes.
+    </p>
+    <p>Bonne chance !</p>
+
+    <ion-button (click)="goToPlay()">C'est parti</ion-button>
+</ion-content>

@@ -1,6 +1,5 @@
 export interface GameConfig {
-    rangeMin: number;
-    rangeMax: number;
+    range: number;
     serieSize: number;
     timePrinted: number;
 }

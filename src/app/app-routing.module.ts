@@ -1,9 +1,11 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { RouteConstants } from './constants/route.constants';
 
 const routes: Routes = [
-    { path: '', redirectTo: 'play', pathMatch: 'full' },
-    { path: 'play', children: [{ path: '', loadChildren: () => import('./pages/game/game.page.module').then(m => m.GamePageModule) }] },
+    {path: '', redirectTo: RouteConstants.HOME, pathMatch: 'full'},
+    {path: RouteConstants.PLAY, loadChildren: () => import('./pages/game/game.page.module').then(m => m.GamePageModule)},
+    {path: RouteConstants.HOME, loadChildren: () => import('./pages/home/home.module').then(m => m.HomePageModule)},
 ];
 
 @NgModule({
