@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { Game } from '../../model/game.class';
+import { Game } from '../../../model/game.class';
 import { NavController } from '@ionic/angular';
 
 @Component({

@@ -29,7 +29,6 @@ export class Game {
         if (this.numbers.length === 0) {
             this.generateNumbers();
         }
-        console.log('game numbers:', this.numbers);
         return timer(0, this.config.timePrinted)
             .pipe(
                 take(this.actualSerieSize),
