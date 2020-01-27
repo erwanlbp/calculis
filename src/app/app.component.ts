@@ -7,6 +7,7 @@ import { AuthService } from './services/auth.service';
 import { Observable } from 'rxjs';
 import * as jsonPackage from './../../package.json';
 import * as moment from 'moment';
+import { UtilsService } from "./services/utils.service";
 
 @Component({
     selector: 'app-root',
@@ -29,6 +30,7 @@ export class AppComponent implements OnInit {
         private splashScreen: SplashScreen,
         private statusBar: StatusBar,
         private authService: AuthService,
+        private utilsService: UtilsService,
     ) {
         this.initializeApp();
     }
@@ -50,6 +52,8 @@ export class AppComponent implements OnInit {
     }
 
     login() {
-        this.authService.login();
+        this.authService.login()
+            .then(() => this.utilsService.showToast('Connexion réussie'))
+            .catch(() => this.utilsService.showToast('Echec de la connexion'));
     }
 }

@@ -17,7 +17,7 @@ export class ScoreService {
     ) {
     }
 
-    private userScoresCollection(): Observable<AngularFirestoreCollection<UserScore>> {
+    private userScoresCollection$(): Observable<AngularFirestoreCollection<UserScore>> {
         return this.authService.getUserId$().pipe(
             map(userId => {
                 if (!userId) {
@@ -29,28 +29,47 @@ export class ScoreService {
     }
 
     fetchUserScores$(): Observable<UserScore[]> {
-        return this.userScoresCollection().pipe(
+        return this.userScoresCollection$().pipe(
             switchMap(doc => {
                 if (!doc) {
                     return of([] as UserScore[]);
                 }
                 return doc.valueChanges();
             }),
-            map((scores: UserScore[]) => scores.sort((a, b) => a.difficulty > b.difficulty ? -1 : a.difficulty < b.difficulty ? 1 : 0))
         );
     }
 
+    resetProgress(difficulty: GameDifficulty): Promise<void> {
+        const partialScore: Partial<UserScore> = {difficulty, currentLevel: 1};
+        return this.userScoresCollection$().pipe(
+            take(1),
+            filter(doc => !!doc),
+            switchMap(collection => collection.doc<UserScore>(difficulty).update(partialScore)),
+        ).toPromise();
+    }
+
     updateBestScore(difficulty: GameDifficulty, score: number): Promise<void> {
+        const scoreToSave: Partial<UserScore> = {difficulty, currentLevel: score + 1};
         let scoreDoc: AngularFirestoreDocument<UserScore>;
-        return this.userScoresCollection().pipe(
+        return this.userScoresCollection$().pipe(
             take(1),
             filter(doc => !!doc),
             switchMap(collection => {
-                scoreDoc = collection.doc<UserScore>(difficulty);
+                scoreDoc = collection.doc<UserScore>(scoreToSave.difficulty);
                 return scoreDoc.get();
             }),
-            filter(doc => !doc.data() || doc.data().score < score),
-            switchMap(doc => scoreDoc.set({difficulty, score}))
+            switchMap(doc => {
+                if (!doc.data() || doc.data().score < score) {
+                    scoreToSave.score = score;
+                }
+                return scoreDoc.update(scoreToSave);
+            })
         ).toPromise();
+    }
+
+    fetchUserScore$(difficulty: GameDifficulty): Observable<UserScore> {
+        return this.fetchUserScores$().pipe(
+            map(scores => scores.find(s => s.difficulty === difficulty))
+        );
     }
 }

@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { RoutePathConstants } from '../../constants/route.constants';
 import { GameConfig } from '../../model/game-config.interface';
 import { GameService } from '../../services/game.service';
+import { GameDifficulty } from '../../model/game-difficulty.enum';
 
 @Component({
     selector: 'app-home',
@@ -24,6 +25,6 @@ export class HomePage implements OnInit {
     }
 
     goToPlay() {
-        this.router.navigateByUrl(RoutePathConstants.PLAY);
+        this.router.navigate([RoutePathConstants.PLAY], {queryParams: {difficulty: GameDifficulty.MEDIUM}});
     }
 }

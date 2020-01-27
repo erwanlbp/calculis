@@ -47,8 +47,8 @@ export class GameService {
         return this.generateGame();
     }
 
-    newGame(): Game {
-        this.currentLevel = 1;
+    newGame(defaultLevel: number = 1): Game {
+        this.currentLevel = defaultLevel;
         return this.generateGame();
     }
 }

@@ -3,12 +3,12 @@
         <ion-buttons slot="start">
             <ion-menu-button *ngIf="!backButton"></ion-menu-button>
         </ion-buttons>
-        <ion-title>Jeu - Niveau {{game.level}}</ion-title>
+        <ion-title>Jeu<span *ngIf="game"> - Niveau {{game.level}}</span></ion-title>
         <ion-back-button #backButton [defaultHref]="ROOT_PATH" slot="start"></ion-back-button>
     </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content *ngIf="game">
     <app-pre-game (start)="startGame()" *ngIf="gameState === 'pre-game'" [game]="game"></app-pre-game>
     <app-game-sequence *ngIf="gameState === 'sequence'" [number$]="number$" [timePrinted]="game.config.timePrinted"></app-game-sequence>
     <app-game-user-answer (answered)="answered($event)" *ngIf="gameState === 'user-answer'" [answer]="game.getAnswer()"></app-game-user-answer>
