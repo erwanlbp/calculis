@@ -1,26 +1,31 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { FormGroup, Validators, FormControl } from '@angular/forms';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { IonInput } from '@ionic/angular';
 
 @Component({
-  selector: 'app-game-user-answer',
-  templateUrl: './game-user-answer.component.html',
-  styleUrls: ['./game-user-answer.component.scss'],
+    selector: 'app-game-user-answer',
+    templateUrl: './game-user-answer.component.html',
+    styleUrls: ['./game-user-answer.component.scss'],
 })
 export class GameUserAnswerComponent implements OnInit {
 
-  form: FormGroup;
+    form: FormGroup;
 
-  @Input() answer: number;
-  @Output() answered: EventEmitter<boolean> = new EventEmitter();
+    @Input() answer: number;
+    @Output() answered: EventEmitter<boolean> = new EventEmitter();
 
-  constructor() { }
+    @ViewChild('answerInput', {static: false}) answerInput: IonInput;
 
-  ngOnInit() {
-    this.form = new FormGroup({ answer: new FormControl([null, Validators.required]) });
-  }
+    constructor() {
+    }
 
-  submitAnswer() {
-    const userAnswer = this.form.get('answer').value;
-    this.answered.emit(userAnswer === this.answer);
-  }
+    ngOnInit() {
+        this.form = new FormGroup({answer: new FormControl([null, Validators.required])});
+        setTimeout(() => this.answerInput.setFocus(), 150);
+    }
+
+    submitAnswer() {
+        const userAnswer = this.form.get('answer').value;
+        this.answered.emit(userAnswer === this.answer);
+    }
 }
