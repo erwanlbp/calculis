@@ -4,6 +4,7 @@ import { Game } from 'src/app/model/game.class';
 import { GameService } from '../../services/game.service';
 import { RoutePathConstants } from '../../constants/route.constants';
 import { GameState } from '../../model/game-state.enum';
+import { ScoreService } from '../../services/score.service';
 
 @Component({
     selector: 'app-game',
@@ -22,6 +23,7 @@ export class GamePage implements OnInit {
 
     constructor(
         private gameService: GameService,
+        private scoreService: ScoreService,
     ) {
     }
 
@@ -29,7 +31,7 @@ export class GamePage implements OnInit {
         this.restart();
     }
 
-    private startGame() {
+    startGame() {
         this.gameState = GameState.SEQUENCE;
         this.number$ = this.game.getNumbers$();
         this.number$.subscribe({complete: () => this.gameState = GameState.USER_ANSWER});
@@ -47,6 +49,10 @@ export class GamePage implements OnInit {
 
     answered(userIsCorrect: boolean) {
         this.userIsCorrect = userIsCorrect;
+        if (userIsCorrect) {
+            this.scoreService.updateBestScore(this.game.difficulty, this.game.level)
+                .catch(err => console.log(err));
+        }
         this.gameState = GameState.POST_GAME;
     }
 }

@@ -1,27 +1,22 @@
 import { GameConfig } from './game-config.interface';
 import { Observable, timer } from 'rxjs';
 import { map, take } from 'rxjs/operators';
+import { GameDifficulty } from './game-difficulty.enum';
 
 export class Game {
 
     private numbers: number[] = [];
-    private config: GameConfig;
+    config: GameConfig;
     private actualSerieSize: number;
-    private level: number;
+    level: number;
+    difficulty: GameDifficulty;
 
-    constructor(level: number, config: GameConfig) {
+    constructor(difficulty: GameDifficulty, level: number, config: GameConfig) {
+        this.difficulty = difficulty;
         this.level = level;
         this.config = config;
         console.log('game config for level', level, ':', this.config);
         this.actualSerieSize = config.serieSize + 2;
-    }
-
-    public getConfig(): GameConfig {
-        return this.config;
-    }
-
-    getLevel() {
-        return this.level;
     }
 
     public getNumbers(): number[] {

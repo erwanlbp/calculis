@@ -1,0 +1,17 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <ion-menu-button *ngIf="!backButton"></ion-menu-button>
+        </ion-buttons>
+        <ion-title>Scores</ion-title>
+        <ion-back-button #backButton [defaultHref]="ROOT_PATH" slot="start"></ion-back-button>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    <ion-list>
+        <ion-item *ngFor="let score of scores$ | async">
+            <ion-label>Meilleur score en <i>{{score.difficulty}}</i> : <strong>{{score.score}}</strong></ion-label>
+        </ion-item>
+    </ion-list>
+</ion-content>

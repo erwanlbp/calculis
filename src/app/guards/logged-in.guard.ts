@@ -3,7 +3,7 @@ import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from
 import { Observable, of } from 'rxjs';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { catchError, map, take } from 'rxjs/operators';
-import { RoutePathConstants } from "../constants/route.constants";
+import { RoutePathConstants } from '../constants/route.constants';
 
 @Injectable({
     providedIn: 'root'

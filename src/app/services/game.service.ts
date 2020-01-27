@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage';
 import { Game } from '../model/game.class';
 import { GameConfig } from '../model/game-config.interface';
+import { GameDifficulty } from '../model/game-difficulty.enum';
 
 @Injectable({
     providedIn: 'root'
@@ -31,6 +32,7 @@ export class GameService {
 
     private generateGame(): Game {
         return new Game(
+            GameDifficulty.MEDIUM,
             this.currentLevel,
             {
                 range: this.rangeEvolutionFn(this.currentLevel),

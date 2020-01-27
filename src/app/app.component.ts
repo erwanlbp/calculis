@@ -21,6 +21,7 @@ export class AppComponent implements OnInit {
     pages = [
         {title: 'Comment jouer ?', url: RoutePathConstants.HOME, icon: 'help'},
         {title: 'Jeu', url: RoutePathConstants.PLAY, icon: 'logo-game-controller-b'},
+        {title: 'Scores', url: RoutePathConstants.SCORES, icon: 'podium'},
     ];
 
     constructor(
