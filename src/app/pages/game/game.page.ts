@@ -34,20 +34,13 @@ export class GamePage implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.route.queryParams.pipe(
-            map(params => {
-                console.log('sps', params);
-                return params.difficulty as GameDifficulty
-            }),
+            map(params => params.difficulty as GameDifficulty),
             switchMap((difficulty: GameDifficulty) => {
-                console.log('sp', difficulty);
-                this.difficulty = difficulty;
+                this.difficulty = difficulty || GameDifficulty.MEDIUM;
                 return this.scoreService.fetchUserScore$(this.difficulty);
             }),
             take(1),
-        ).subscribe(score => {
-            console.log('s', score);
-            this.restart(score.currentLevel || 1);
-        });
+        ).subscribe(score => this.restart(score && score.currentLevel != null ? score.currentLevel : 1));
     }
 
     startGame() {

@@ -15,7 +15,7 @@ export class Game {
         this.difficulty = difficulty;
         this.level = level;
         this.config = config;
-        console.log('game config for level', level, ':', this.config);
+        console.log('game config for level', level, 'of difficulty', difficulty, ':', this.config);
         this.actualSerieSize = config.serieSize + 2;
     }
 
