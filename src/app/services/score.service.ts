@@ -55,16 +55,18 @@ export class ScoreService {
             take(1),
             filter(doc => !!doc),
             switchMap(collection => {
-                scoreDoc = collection.doc<UserScore>(scoreToSave.difficulty);
+                scoreDoc = collection.doc<UserScore>(difficulty);
                 return scoreDoc.get();
             }),
             switchMap(doc => {
                 if (!doc.data() || doc.data().score < score) {
                     scoreToSave.score = score;
                 }
-                return scoreDoc.update(scoreToSave);
-            })
-        ).toPromise();
+                return doc.data() ?
+                    scoreDoc.update(scoreToSave)
+                    : scoreDoc.set({difficulty: scoreToSave.difficulty, score: scoreToSave.score, currentLevel: scoreToSave.currentLevel});
+            }),
+        ).toPromise().then(() => null);
     }
 
     fetchUserScore$(difficulty: GameDifficulty): Observable<UserScore> {

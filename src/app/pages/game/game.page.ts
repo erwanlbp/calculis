@@ -50,6 +50,7 @@ export class GamePage implements OnInit, OnDestroy {
     }
 
     restart(defaultLevel: number = 1) {
+        this.scoreService.resetProgress(this.difficulty);
         this.game = this.gameService.newGame(defaultLevel);
         this.gameState = GameState.PRE_GAME;
     }
