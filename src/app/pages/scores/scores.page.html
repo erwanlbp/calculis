@@ -9,6 +9,13 @@
 </ion-header>
 
 <ion-content>
+    <div *ngIf="isNotConnected$ | async">
+        <p>Connectez vous pour sauvegarder vos scores et pouvoir reprendre une partie en cours !</p>
+        <ion-button (click)="connect()">
+            <ion-icon name="logo-google" slot="start"></ion-icon>
+            Connexion
+        </ion-button>
+    </div>
     <ion-list>
         <ion-item *ngFor="let score of scores$ | async">
             <ion-label>Meilleur score en <i>{{score.difficulty}}</i> : <strong>{{score.score}}</strong></ion-label>

@@ -19,12 +19,13 @@
         <li>Plus vite</li>
     </ul>
     <p>Si vous quittez en cours de partie, c'est perdu !</p>
-    <br/>
-    <p>Au niveau <strong>1</strong>, les paramètres seront :
-        <strong>{{defaultConfig.serieSize}}</strong> nombres
-        entre <strong>{{-1 * defaultConfig.range}}</strong> et <strong>{{defaultConfig.range}}</strong>
-        qui resteront affichés <strong>{{defaultConfig.timePrinted}}</strong> millisecondes.
-    </p>
+    <div *ngIf="isNotConnected$ | async">
+        <p>Connectez vous pour sauvegarder vos scores et pouvoir reprendre une partie en cours !</p>
+        <ion-button (click)="connect()">
+            <ion-icon name="logo-google" slot="start"></ion-icon>
+            Connexion
+        </ion-button>
+    </div>
     <p>Bonne chance !</p>
 
     <ion-button (click)="goToPlay()">C'est parti</ion-button>

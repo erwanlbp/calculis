@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage';
 import { Game } from '../model/game.class';
 import { GameConfig } from '../model/game-config.interface';
-import { GameDifficulty } from '../model/game-difficulty.enum';
+import { GameDifficulty, timeToPrintFromDifficulty } from '../model/game-difficulty.enum';
 
 @Injectable({
     providedIn: 'root'
@@ -12,43 +12,39 @@ export class GameService {
     private currentLevel: number;
 
     private defaultConfig: GameConfig = {
-        timePrinted: 2000,
+        timePrinted: null,
         range: 5,
         serieSize: 3,
     };
 
-    private rangeEvolutionFn = (lvl: number) => Math.floor(lvl * 0.40) + this.defaultConfig.range;
-    private serieSizeEvolutionFn = (lvl: number) => Math.floor(lvl * 0.350) + this.defaultConfig.serieSize;
-    private timePrintedEvolutionFn = (lvl: number) => Math.ceil(-1 * lvl * 0.35) + this.defaultConfig.timePrinted;
+    private rangeEvolutionFn = (lvl: number) => Math.floor(lvl / 5) + this.defaultConfig.range;
+    private serieSizeEvolutionFn = (lvl: number) => Math.floor(lvl / 4) + this.defaultConfig.serieSize;
+    private timePrintedEvolutionFn = (difficulty: GameDifficulty) => timeToPrintFromDifficulty(difficulty);
 
     constructor(
         private storage: Storage
     ) {
     }
 
-    getDefaultConfig(): GameConfig {
-        return this.defaultConfig;
-    }
-
-    private generateGame(): Game {
+    private generateGame(difficulty: GameDifficulty): Game {
         return new Game(
-            GameDifficulty.MEDIUM,
+            difficulty,
             this.currentLevel,
             {
                 range: this.rangeEvolutionFn(this.currentLevel),
                 serieSize: this.serieSizeEvolutionFn(this.currentLevel),
-                timePrinted: this.timePrintedEvolutionFn(this.currentLevel),
+                timePrinted: this.timePrintedEvolutionFn(difficulty),
             }
         );
     }
 
-    nextGameLevel(): Game {
+    nextGameLevel(difficulty: GameDifficulty): Game {
         this.currentLevel++;
-        return this.generateGame();
+        return this.generateGame(difficulty);
     }
 
-    newGame(defaultLevel: number = 1): Game {
+    newGame(difficulty: GameDifficulty, defaultLevel: number = 1): Game {
         this.currentLevel = defaultLevel;
-        return this.generateGame();
+        return this.generateGame(difficulty);
     }
 }
