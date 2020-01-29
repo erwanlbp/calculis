@@ -6,6 +6,7 @@ import { GameDifficulty } from '../../model/game-difficulty.enum';
 import { AuthService } from '../../services/auth.service';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { ActionSheetController } from '@ionic/angular';
 
 @Component({
     selector: 'app-home',
@@ -20,6 +21,7 @@ export class HomePage implements OnInit {
         private router: Router,
         private gameService: GameService,
         private authService: AuthService,
+        private actionSheetController: ActionSheetController,
     ) {
     }
 
@@ -27,8 +29,19 @@ export class HomePage implements OnInit {
         this.isNotConnected$ = this.authService.isConnected$().pipe(map(value => !value));
     }
 
-    goToPlay() {
-        this.router.navigate([RoutePathConstants.PLAY], {queryParams: {difficulty: GameDifficulty.MEDIUM}});
+    async goToPlay() {
+        const actionSheet = await this.actionSheetController.create({
+            header: 'Difficulté',
+            subHeader: 'Sélectionnez le niveau de difficulté :',
+            buttons: Object.keys(GameDifficulty).map(key => ({
+                text: GameDifficulty[key],
+                role: 'selected',
+                handler: () => {
+                    this.router.navigate([RoutePathConstants.PLAY], {queryParams: {difficulty: GameDifficulty[key]}});
+                }
+            })),
+        });
+        await actionSheet.present();
     }
 
     connect() {

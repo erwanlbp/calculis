@@ -5,6 +5,7 @@ import { filter, map, switchMap, take } from 'rxjs/operators';
 import { AuthService } from './auth.service';
 import { UserScore } from '../model/user-scores.interface';
 import { GameDifficulty } from '../model/game-difficulty.enum';
+import { updateOrSet } from "../operators/update-or-set.operator";
 
 @Injectable({
     providedIn: 'root'
@@ -44,7 +45,8 @@ export class ScoreService {
         return this.userScoresCollection$().pipe(
             take(1),
             filter(doc => !!doc),
-            switchMap(collection => collection.doc<UserScore>(difficulty).update(partialScore)),
+            map(collection => collection.doc<UserScore>(difficulty)),
+            updateOrSet(partialScore),
         ).toPromise();
     }
 
@@ -59,7 +61,7 @@ export class ScoreService {
                 return scoreDoc.get();
             }),
             switchMap(doc => {
-                if (!doc.data() || doc.data().score < score) {
+                if (!doc.data() || !doc.data().score || doc.data().score < score) {
                     scoreToSave.score = score;
                 }
                 return doc.data() ?

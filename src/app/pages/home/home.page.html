@@ -18,7 +18,8 @@
         <li>Plus grands</li>
         <li>Plus vite</li>
     </ul>
-    <p>Si vous quittez en cours de partie, c'est perdu !</p>
+    <p>Vous pouvez revenir à l'écran d'accueil ou quitter l'application, votre progression est sauvegardée.<br/>
+        Mais ne quittez pas en cours de partie, sinon c'est perdu !</p>
     <div *ngIf="isNotConnected$ | async">
         <p>Connectez vous pour sauvegarder vos scores et pouvoir reprendre une partie en cours !</p>
         <ion-button (click)="connect()">

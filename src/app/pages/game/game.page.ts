@@ -35,8 +35,8 @@ export class GamePage implements OnInit, OnDestroy {
     ngOnInit() {
         this.route.queryParams.pipe(
             map(params => params.difficulty as GameDifficulty),
-            switchMap((difficulty: GameDifficulty) => {
-                this.difficulty = difficulty || GameDifficulty.MEDIUM;
+            switchMap(difficulty => {
+                this.difficulty = difficulty || GameDifficulty.EASY;
                 return this.scoreService.fetchUserScore$(this.difficulty);
             }),
             take(1),
