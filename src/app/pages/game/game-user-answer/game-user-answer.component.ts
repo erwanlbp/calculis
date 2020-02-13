@@ -20,12 +20,12 @@ export class GameUserAnswerComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.form = new FormGroup({answer: new FormControl([null, Validators.required])});
+        this.form = new FormGroup({answer: new FormControl(null, [Validators.required, Validators.pattern('^\\-?\\d+$')])});
         setTimeout(() => this.answerInput.setFocus(), 150);
     }
 
     submitAnswer() {
-        const userAnswer = this.form.get('answer').value;
+        const userAnswer = Number(this.form.get('answer').value);
         this.answered.emit(userAnswer === this.answer);
     }
 }
