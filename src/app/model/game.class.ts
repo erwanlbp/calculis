@@ -2,6 +2,7 @@ import { GameConfig } from './game-config.interface';
 import { Observable, timer } from 'rxjs';
 import { map, take } from 'rxjs/operators';
 import { GameDifficulty } from './game-difficulty.enum';
+import { GameConstant } from "../constants/game.constants";
 
 export class Game {
 
@@ -30,7 +31,7 @@ export class Game {
         if (this.numbers.length === 0) {
             this.generateNumbers();
         }
-        return timer(0, this.config.timePrinted)
+        return timer(0, this.config.timePrinted + GameConstant.DELAY_BETWEEN_NUMBERS)
             .pipe(
                 take(this.actualSerieSize),
                 map(i => this.numbers[i]),

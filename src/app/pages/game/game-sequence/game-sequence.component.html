@@ -1,12 +1,12 @@
 <ion-grid>
     <ion-row *ngIf="(number$ | async) !== null" class="ion-justify-content-center">
         <ion-col size="6">
-            <ion-progress-bar type="determinate" [value]="progress$ | async"></ion-progress-bar>
+            <ion-progress-bar type="determinate" [value]="progress$ | async" [reversed]="isOdd"></ion-progress-bar>
         </ion-col>
     </ion-row>
     <ion-row class="ion-justify-content-center">
         <ion-col class="ion-text-center sequence-number" size="12">
-            {{number$ | async | signedNumber}}
+            {{number | signedNumber}}
         </ion-col>
     </ion-row>
 </ion-grid>

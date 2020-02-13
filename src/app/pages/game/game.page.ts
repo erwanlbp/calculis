@@ -5,9 +5,9 @@ import { GameService } from '../../services/game.service';
 import { RoutePathConstants } from '../../constants/route.constants';
 import { GameState } from '../../model/game-state.enum';
 import { ScoreService } from '../../services/score.service';
-import { ActivatedRoute } from "@angular/router";
-import { map, switchMap, take } from "rxjs/operators";
-import { GameDifficulty } from "../../model/game-difficulty.enum";
+import { ActivatedRoute } from '@angular/router';
+import { map, switchMap, take } from 'rxjs/operators';
+import { GameDifficulty } from '../../model/game-difficulty.enum';
 
 @Component({
     selector: 'app-game',

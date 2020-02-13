@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { interval, Observable } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
+import { delay, map, switchMap, tap } from 'rxjs/operators';
+import { GameConstant } from '../../../constants/game.constants';
 
 @Component({
     selector: 'app-game-sequence',
@@ -12,18 +13,26 @@ export class GameSequenceComponent implements OnInit {
     @Input() number$: Observable<number>;
     @Input() timePrinted: number;
 
+    number: number;
     progress$: Observable<number>;
-
-    private progressTick = 30;
+    isOdd: boolean = true;
 
     constructor() {
     }
 
     ngOnInit() {
         if (this.timePrinted) {
+            this.number$.pipe(
+                tap(() => this.number = null),
+                delay(GameConstant.DELAY_BETWEEN_NUMBERS),
+            ).subscribe(n => this.number = n);
             this.progress$ = this.number$.pipe(
-                switchMap(() => interval(this.progressTick)),
-                map(i => 1 - (i / (this.timePrinted / this.progressTick))),
+                tap(() => this.isOdd = !this.isOdd),
+                switchMap(() => interval(GameConstant.PROGRESS_TICK)),
+                map(i => {
+                    const val = i / (this.timePrinted / GameConstant.PROGRESS_TICK);
+                    return this.isOdd ? val : 1 - val;
+                }),
             );
         }
     }
