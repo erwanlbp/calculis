@@ -8,6 +8,7 @@ import { Observable } from 'rxjs';
 import * as jsonPackage from './../../package.json';
 import * as moment from 'moment';
 import { UtilsService } from "./services/utils.service";
+import { AccountService } from './services/account.service';
 
 @Component({
     selector: 'app-root',
@@ -23,6 +24,7 @@ export class AppComponent implements OnInit {
         {title: 'Comment jouer ?', url: RoutePathConstants.HOME, icon: 'help'},
         {title: 'Jeu', url: RoutePathConstants.PLAY, icon: 'logo-game-controller-b'},
         {title: 'Scores', url: RoutePathConstants.SCORES, icon: 'podium'},
+        {title: 'Compte', url: RoutePathConstants.ACCOUNT, icon: 'contact'},
     ];
 
     constructor(
@@ -31,6 +33,7 @@ export class AppComponent implements OnInit {
         private statusBar: StatusBar,
         private authService: AuthService,
         private utilsService: UtilsService,
+        private accountService: AccountService,
     ) {
         this.initializeApp();
     }
@@ -53,6 +56,7 @@ export class AppComponent implements OnInit {
 
     login() {
         this.authService.login()
+            .then(user => this.accountService.updateAccountEmail(user.user.email))
             .then(() => this.utilsService.showToast('Connexion réussie'))
             .catch(() => this.utilsService.showToast('Echec de la connexion'));
     }
