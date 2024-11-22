@@ -7,6 +7,9 @@ decrypt: # Decrypt config files
 start: # Local start the app
 	npm run start
 
+deploy-hosting: # Deploy front app to firebase hosting
+	npm run build && nvm use lts/iron && ./deploy_web.sh ${msg}
+
 deploy-all-functions: deploy-function-DeleteUserScoresOnUserDelete deploy-function-WaitForOpponent # Deploy Go backend functions
 
 deploy-function-DeleteUserScoresOnUserDelete: # Deploy Go backend function
@@ -21,4 +24,4 @@ deploy-function-WaitForOpponent: # Deploy Go backend function
 	gcloud functions deploy WaitForOpponent --region europe-west1 --runtime go123 --gen2 --project calculis \
 --source=functions \
 --trigger-http \
---no-allow-unauthenticated
+--allow-unauthenticated

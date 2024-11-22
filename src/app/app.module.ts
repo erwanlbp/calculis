@@ -14,6 +14,7 @@ import { registerLocaleData } from '@angular/common';
 import localeFr from '@angular/common/locales/fr';
 import { IonicStorageModule } from '@ionic/storage';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 
 registerLocaleData(localeFr, 'fr-FR');
 
@@ -24,6 +25,7 @@ registerLocaleData(localeFr, 'fr-FR');
         BrowserModule,
         IonicModule.forRoot(),
         IonicStorageModule.forRoot(),
+        HttpClientModule,
         AppRoutingModule,
         AngularFireModule.initializeApp(environment.firebaseConfig),
         AngularFirestoreModule,

@@ -4,17 +4,24 @@ import (
 	"context"
 	"log"
 
-	"cloud.google.com/go/firestore"
+	firebase "firebase.google.com/go/v4"
+	"firebase.google.com/go/v4/auth"
 )
 
-var Client *firestore.Client
+var AuthClient *auth.Client
 
 func init() {
 	ctx := context.Background()
 
-	client, err := firestore.NewClient(ctx, "calculis")
+	app, err := firebase.NewApp(ctx, &firebase.Config{
+		ProjectID: "calculis",
+	})
 	if err != nil {
-		log.Fatalf("firestore.NewClient: %v", err)
+		log.Fatalf("firebase.NewApp: %v", err)
 	}
-	Client = client
+	ac, err := app.Auth(ctx)
+	if err != nil {
+		log.Fatalf("firebase.NewApp: %v", err)
+	}
+	AuthClient = ac
 }

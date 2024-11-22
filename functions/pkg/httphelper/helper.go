@@ -41,5 +41,5 @@ func DumpRequest(req *http.Request) {
 		slog.Warn("failed to dump request", slog.String("err", err.Error()))
 		return
 	}
-	slog.Debug("request dump", slog.String("path", req.URL.Path), slog.String("dump", string(dump)))
+	slog.Info("request dump", slog.String("dump", string(dump)))
 }

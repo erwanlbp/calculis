@@ -1,12 +1,13 @@
 package triggerhttp
 
 import (
-	"encoding/json"
+	"errors"
 	"fmt"
 	"log/slog"
 	"net/http"
 
-	"github.com/erwanlbp/calculis/pkg/firebase"
+	"github.com/erwanlbp/calculis/pkg/auth"
+	firebase "github.com/erwanlbp/calculis/pkg/firestore"
 	"github.com/erwanlbp/calculis/pkg/httphelper"
 	"github.com/erwanlbp/calculis/pkg/model"
 )
@@ -14,20 +15,16 @@ import (
 func WaitForOpponent(rw http.ResponseWriter, req *http.Request) {
 	ctx := req.Context()
 
-	httphelper.DumpRequest(req)
-
-	var payload struct {
-		UserID string `json:"user_id"`
-	}
-	if err := json.NewDecoder(req.Body).Decode(&payload); err != nil {
-		slog.Error("failed to decode body", slog.String("path", req.URL.Path), slog.String("err", err.Error()))
-		httphelper.WriteError(rw, http.StatusBadRequest, err)
+	userId, ok := auth.FromContext(req.Context())
+	if !ok {
+		slog.Error("request is missing userId in context")
+		httphelper.WriteError(rw, http.StatusUnauthorized, errors.New("not authenticated"))
 		return
 	}
 
-	doc := firebase.Client.Collection(fmt.Sprintf("users/%s/games", payload.UserID)).NewDoc()
+	doc := firebase.Client.Collection(fmt.Sprintf("users/%s/games", userId)).NewDoc()
 	if _, err := doc.Set(ctx, model.UserGame{Status: model.StatusSearching}); err != nil {
-		slog.Error("failed to create user game", slog.String("path", req.URL.Path), slog.String("err", err.Error()))
+		slog.Error("failed to create user game", slog.String("err", err.Error()))
 		httphelper.WriteError(rw, http.StatusInternalServerError, err)
 	}
 

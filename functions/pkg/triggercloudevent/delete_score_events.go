@@ -10,7 +10,7 @@ import (
 	"github.com/googleapis/google-cloudevents-go/cloud/firestoredata"
 	"google.golang.org/protobuf/proto"
 
-	"github.com/erwanlbp/calculis/pkg/firebase"
+	firebase "github.com/erwanlbp/calculis/pkg/firestore"
 )
 
 func DeleteUserScoresOnUserDeleteEntryPoint(ctx context.Context, protoEvent event.Event) error {

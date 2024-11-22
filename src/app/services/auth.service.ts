@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { AngularFireAuth } from '@angular/fire/auth';
-import { map } from 'rxjs/operators';
+import { map, take } from 'rxjs/operators';
 import { Platform } from '@ionic/angular';
 import { GooglePlus } from '@ionic-native/google-plus/ngx';
 import { firebaseWebClientId } from 'src/environments/firebase.config';
@@ -21,6 +21,11 @@ export class AuthService {
 
     isConnected$(): Observable<boolean> {
         return this.fireAuth.user.pipe(map(user => !!user));
+    }
+
+    getAuthToken$(): Promise<string> {
+        return this.fireAuth.authState.pipe(take(1)).toPromise()
+            .then(user => user ? user.getIdToken() : null);
     }
 
     getUserId$(): Observable<string> {

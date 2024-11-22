@@ -37,11 +37,15 @@ export class HomePage implements OnInit {
                 text: GameDifficulty[key],
                 role: 'selected',
                 handler: () => {
-                    this.router.navigate([RoutePathConstants.PLAY], {queryParams: {difficulty: GameDifficulty[key]}});
+                    this.router.navigate([RoutePathConstants.PLAY], { queryParams: { difficulty: GameDifficulty[key] } });
                 }
             })),
         });
         await actionSheet.present();
+    }
+
+    async goToWaitForOpponent() {
+        await this.gameService.waitForOpponent()
     }
 
     connect() {

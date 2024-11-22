@@ -23,6 +23,15 @@ brew install sops
 make decrypt
 ```
 
+- Install firebase cli
+
+> ℹ️ Use npm version >= 18
+> (use nvm !)
+
+```bash
+npm install -g firebase-tools
+```
+
 - Start the project
 
 ```bash
