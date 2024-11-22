@@ -1,22 +1,17 @@
-package mainnotmain
+package triggercloudevent
 
 import (
 	"context"
 	"fmt"
-	"log"
+	"log/slog"
 	"strings"
 
-	"github.com/GoogleCloudPlatform/functions-framework-go/functions"
 	"github.com/cloudevents/sdk-go/v2/event"
-	"github.com/erwanlbp/calculis/pkg/firebase"
 	"github.com/googleapis/google-cloudevents-go/cloud/firestoredata"
 	"google.golang.org/protobuf/proto"
-)
 
-func init() {
-	// Register a CloudEvent function with the Functions Framework
-	functions.CloudEvent("DeleteUserScoresOnUserDelete", DeleteUserScoresOnUserDeleteEntryPoint)
-}
+	"github.com/erwanlbp/calculis/pkg/firebase"
+)
 
 func DeleteUserScoresOnUserDeleteEntryPoint(ctx context.Context, protoEvent event.Event) error {
 	var data firestoredata.DocumentEventData
@@ -31,9 +26,8 @@ func DeleteUserScoresOnUserDeleteEntryPoint(ctx context.Context, protoEvent even
 }
 
 func DeleteUserScores(ctx context.Context, userID string) error {
-	logger := log.Default()
 
-	logger.Printf("Deleting user %s scores ...", userID)
+	slog.Info("Deleting user scores ...", slog.String("userID", userID))
 
 	scoresRef := firebase.Client.Collection(fmt.Sprintf("users/%s/scores", userID))
 
@@ -46,7 +40,7 @@ func DeleteUserScores(ctx context.Context, userID string) error {
 		if _, err := ref.Delete(ctx); err != nil {
 			return fmt.Errorf("failed to delete user score %s: %w", ref.ID, err)
 		}
-		logger.Printf("Deleted user %s score %s ...", userID, ref.ID)
+		slog.Info("Deleted user score", slog.String("userID", userID), slog.String("score", ref.ID))
 	}
 
 	return nil
