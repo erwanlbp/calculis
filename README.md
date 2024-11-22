@@ -61,5 +61,20 @@ ionic cordova run android --livereload --debug --device --consolelogs
 ## Deploy web app
 
 ```bash
-ionic build && firebase deploy
+# ⚠️ Update the app version in package.json !
+
+# make sure you are building with npm lts/gallium
+nvm use lts/gallium
+
+# build
+npm run build
+
+# use npm lts/iron to deploy (firebase needs >=18)
+nvm use lts/iron
+
+# deploy
+firebase deploy --message <app_version_number>
+
+# go back to npm lts/gallium to develop more
+nvm use lts/gallium
 ```

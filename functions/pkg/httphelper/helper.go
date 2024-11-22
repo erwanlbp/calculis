@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"log/slog"
 	"net/http"
-	"net/http/httputil"
 )
 
 func WriteJSON[T any](rw http.ResponseWriter, status int, data T) {
@@ -25,7 +24,7 @@ func WriteJSON[T any](rw http.ResponseWriter, status int, data T) {
 }
 
 func WriteError(rw http.ResponseWriter, status int, err error) {
-	if err != nil {
+	if err == nil {
 		err = errors.New("unknown error")
 	}
 	b, _ := json.Marshal(map[string]string{"error": err.Error()})
@@ -33,13 +32,4 @@ func WriteError(rw http.ResponseWriter, status int, err error) {
 	if _, err := rw.Write(b); err != nil {
 		slog.Error("failed to write Error response", slog.String("error", err.Error()))
 	}
-}
-
-func DumpRequest(req *http.Request) {
-	dump, err := httputil.DumpRequest(req, true)
-	if err != nil {
-		slog.Warn("failed to dump request", slog.String("err", err.Error()))
-		return
-	}
-	slog.Info("request dump", slog.String("dump", string(dump)))
 }

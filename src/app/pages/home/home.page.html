@@ -30,5 +30,5 @@
     <p>Bonne chance !</p>
 
     <ion-button (click)="goToPlay()">C'est parti</ion-button>
-    <ion-button (click)="goToWaitForOpponent()">Chercher un adversaire</ion-button>
+    <ion-button *ngIf="!(isNotConnected$ | async)" (click)="goToWaitForOpponent()">Chercher un adversaire</ion-button>
 </ion-content>

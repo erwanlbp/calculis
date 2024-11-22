@@ -11,7 +11,8 @@ import (
 
 func init() {
 	// Cloud Event
-	functions.CloudEvent("DeleteUserScoresOnUserDelete", triggercloudevent.DeleteUserScoresOnUserDeleteEntryPoint)
+	functions.CloudEvent("OnUserDelete", triggercloudevent.OnUserDeleteEntryPoint)
+	functions.CloudEvent("OnGameCreate", triggercloudevent.OnGameCreateEntryPoint)
 
 	// Http
 	functions.HTTP("WaitForOpponent", httphelper.Cors(auth.Middleware(triggerhttp.WaitForOpponent)))
