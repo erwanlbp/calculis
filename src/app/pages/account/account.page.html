@@ -3,7 +3,7 @@
         <ion-buttons slot="start">
             <ion-menu-button *ngIf="!backButton"></ion-menu-button>
         </ion-buttons>
-        <ion-title>Compte</ion-title>
+        <ion-title>Compte <span *ngIf="email$ | async">({{email$ | async}})</span></ion-title>
         <ion-back-button #backButton [defaultHref]="ROOT_PATH" slot="start"></ion-back-button>
     </ion-toolbar>
 </ion-header>

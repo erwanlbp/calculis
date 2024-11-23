@@ -17,6 +17,7 @@ export class AccountPage implements OnInit {
     ROOT_PATH: string = RoutePathConstants.HOME;
 
     showDeleteAccount$: Observable<boolean>;
+    email$: Observable<string>;
 
     constructor(
         private authService: AuthService,
@@ -28,6 +29,7 @@ export class AccountPage implements OnInit {
         this.showDeleteAccount$ = this.authService.isConnected$().pipe(
             map(value => !!value && window.location.hostname.includes('localhost')),
         );
+        this.email$ = this.authService.getUserEmail$();
     }
 
     askConfirm() {
