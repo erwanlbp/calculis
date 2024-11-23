@@ -11,13 +11,7 @@ type UserGame struct {
 }
 
 type Game struct {
-	GameId string          `firestore:"gameId,omitempty"`
-	Create []GameCreateDto `firestore:"create,omitempty"` // Used as event data in OnGameCreate
-}
-
-type GameCreateDto struct {
-	UserId             string `firestore:"userId,omitempty" json:"userId,omitempty"`
-	UserPersonalGameId string `firestore:"userPersonalGameId,omitempty" json:"userPersonalGameId,omitempty"`
+	GameId string `firestore:"gameId,omitempty"`
 }
 
 type GameUser struct {

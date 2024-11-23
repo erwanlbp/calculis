@@ -12,7 +12,6 @@ deploy-hosting: # Deploy front app to firebase hosting
 
 deploy-all-functions: # Deploy Go backend functions
 	make deploy-function-OnUserDelete 
-	make deploy-function-OnGameCreate 
 	make deploy-function-WaitForOpponent
 
 deploy-function-OnUserDelete: # Deploy Go backend function
@@ -22,14 +21,6 @@ deploy-function-OnUserDelete: # Deploy Go backend function
 --trigger-event-filters=database='(default)' \
 --trigger-location=eur3 \
 --trigger-event-filters-path-pattern=document='users/{userID}'
-
-deploy-function-OnGameCreate: # Deploy Go backend function
-	gcloud functions deploy OnGameCreate --region europe-west1 --runtime go123 --gen2 --project calculis \
---source=functions \
---trigger-event-filters=type=google.cloud.firestore.document.v1.created \
---trigger-event-filters=database='(default)' \
---trigger-location=eur3 \
---trigger-event-filters-path-pattern=document='games/{gameID}'
 
 deploy-function-WaitForOpponent: # Deploy Go backend function
 	gcloud functions deploy WaitForOpponent --region europe-west1 --runtime go123 --gen2 --project calculis \
