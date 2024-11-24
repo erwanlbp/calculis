@@ -9,6 +9,7 @@
     "src/polyfills.ts"
   ],
   "include": [
+    "src/zone-flags.ts",
     "src/**/*.d.ts"
   ]
 }
