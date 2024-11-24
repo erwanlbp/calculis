@@ -23,6 +23,7 @@ export class AppComponent implements OnInit {
     pages = [
         {title: 'Comment jouer ?', url: RoutePathConstants.HOME, icon: 'help'},
         {title: 'Jeu', url: RoutePathConstants.PLAY, icon: 'logo-game-controller-b'},
+        {title: 'Historique', url: RoutePathConstants.GAMES_HISTORY, icon: 'stats'},
         {title: 'Scores', url: RoutePathConstants.SCORES, icon: 'podium'},
         {title: 'Compte', url: RoutePathConstants.ACCOUNT, icon: 'contact'},
     ];
