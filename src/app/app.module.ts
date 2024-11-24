@@ -13,8 +13,8 @@ import localeFr from '@angular/common/locales/fr';
 import { IonicStorageModule } from '@ionic/storage';
 import { getFirestore, provideFirestore } from '@angular/fire/firestore';
 import { getAuth, provideAuth } from '@angular/fire/auth';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
+import { HttpClientModule } from '@angular/common/http';
+import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
 
 registerLocaleData(localeFr, 'fr-FR');
 
