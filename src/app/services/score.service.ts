@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
-import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument } from '@angular/fire/firestore';
+import { collection, CollectionReference, DocumentData, Firestore } from '@angular/fire/firestore';
 import { filter, map, switchMap, take } from 'rxjs/operators';
 import { AuthService } from './auth.service';
 import { UserScore } from '../model/user-scores.interface';
@@ -13,18 +13,18 @@ import { updateOrSet } from "../operators/update-or-set.operator";
 export class ScoreService {
 
     constructor(
-        private firestore: AngularFirestore,
+        private firestore: Firestore,
         private authService: AuthService,
     ) {
     }
 
-    private userScoresCollection$(): Observable<AngularFirestoreCollection<UserScore>> {
+    private userScoresCollection$(): Observable<CollectionReference<UserScore>> {
         return this.authService.getUserId$().pipe(
             map(userId => {
                 if (!userId) {
                     return null;
                 }
-                return this.firestore.collection<UserScore>(`users/${userId}/scores`);
+                return collection(this.firestore,`users/${userId}/scores`);
             })
         );
     }
