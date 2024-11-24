@@ -1,17 +1,13 @@
 package model
 
-const (
-	StatusSearching = "searching"
-	StatusPlaying   = "playing"
-)
-
 type UserGame struct {
-	Status string `firestore:"status,omitempty"`
+	Status Status `firestore:"status,omitempty"`
 	UserId string `firestore:"userId,omitempty"`
 }
 
 type Game struct {
-	GameId string `firestore:"gameId,omitempty"`
+	GameId     string     `firestore:"gameId,omitempty"`
+	Difficulty Difficulty `firestore:"difficulty,omitempty"`
 }
 
 type GameUser struct {
