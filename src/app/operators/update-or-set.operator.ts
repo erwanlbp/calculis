@@ -1,14 +1,14 @@
 import { OperatorFunction } from 'rxjs';
-import { AngularFirestoreDocument } from '@angular/fire/firestore';
+import { DocumentReference, getDoc, setDoc, updateDoc } from '@angular/fire/firestore';
 import { switchMap } from 'rxjs/operators';
 
-export function updateOrSet<T>(dataToUpdateOrSet: T): OperatorFunction<AngularFirestoreDocument<T>, void> {
-    let docToUpdate: AngularFirestoreDocument<T>;
+export function updateOrSet<T extends {}>(dataToUpdateOrSet: T): OperatorFunction<DocumentReference<T>, void> {
+    let docToUpdate: DocumentReference<T>;
     return source => source.pipe(
         switchMap(d => {
             docToUpdate = d;
-            return d.get();
+            return getDoc(d);
         }),
-        switchMap(d => !!d.data() ? docToUpdate.update(dataToUpdateOrSet) : docToUpdate.set(dataToUpdateOrSet)),
+        switchMap(d => !!d.data() ? updateDoc(docToUpdate, dataToUpdateOrSet) : setDoc(docToUpdate, dataToUpdateOrSet)),
     );
 }

@@ -5,7 +5,7 @@ import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { RoutePathConstants } from './constants/route.constants';
 import { AuthService } from './services/auth.service';
 import { Observable } from 'rxjs';
-import * as jsonPackage from './../../package.json';
+import {version} from './../../package.json';
 import * as moment from 'moment';
 import { UtilsService } from "./services/utils.service";
 import { AccountService } from './services/account.service';
@@ -18,7 +18,7 @@ import { AccountService } from './services/account.service';
 export class AppComponent implements OnInit {
 
     connected$: Observable<boolean>;
-    version: string = jsonPackage.version;
+    version: string = version;
 
     pages = [
         {title: 'Comment jouer ?', url: RoutePathConstants.HOME, icon: 'help'},
