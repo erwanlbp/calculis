@@ -8,13 +8,13 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { GooglePlus } from '@ionic-native/google-plus/ngx';
 import { environment } from '../environments/environment';
-import { AngularFireModule } from '@angular/fire';
-import { AngularFireAuth, AngularFireAuthModule } from '@angular/fire/auth';
 import { registerLocaleData } from '@angular/common';
 import localeFr from '@angular/common/locales/fr';
 import { IonicStorageModule } from '@ionic/storage';
-import { AngularFirestoreModule } from '@angular/fire/firestore';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { getFirestore, provideFirestore } from '@angular/fire/firestore';
+import { getAuth, provideAuth } from '@angular/fire/auth';
+import { HttpClientModule } from '@angular/common/http';
+import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
 
 registerLocaleData(localeFr, 'fr-FR');
 
@@ -27,17 +27,16 @@ registerLocaleData(localeFr, 'fr-FR');
         IonicStorageModule.forRoot(),
         HttpClientModule,
         AppRoutingModule,
-        AngularFireModule.initializeApp(environment.firebaseConfig),
-        AngularFirestoreModule,
-        AngularFireAuthModule,
+        provideFirebaseApp(() => initializeApp(environment.firebaseConfig)),
+        provideFirestore(() => getFirestore()),
+        provideAuth(() => getAuth()),
     ],
     providers: [
         StatusBar,
         SplashScreen,
-        {provide: RouteReuseStrategy, useClass: IonicRouteStrategy},
-        {provide: LOCALE_ID, useValue: 'fr-FR'},
+        { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
+        { provide: LOCALE_ID, useValue: 'fr-FR' },
         GooglePlus,
-        AngularFireAuth,
     ],
     bootstrap: [AppComponent]
 })
