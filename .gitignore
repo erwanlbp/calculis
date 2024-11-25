@@ -42,4 +42,5 @@ testem.log
 Thumbs.db
 
 .firebase/
+*.decrypted~*
 /src/environments/firebase.config.ts
