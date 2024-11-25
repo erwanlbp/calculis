@@ -7,9 +7,6 @@ decrypt: # Decrypt config files
 start: # Local start the app
 	npm run start
 
-deploy-hosting: # Deploy front app to firebase hosting
-	npm run build && nvm use lts/iron && ./deploy_web.sh ${msg}
-
 deploy-all-functions: # Deploy Go backend functions
 	make deploy-function-OnUserDelete 
 	make deploy-function-WaitForOpponent

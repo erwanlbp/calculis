@@ -1,0 +1,21 @@
+{
+	"data": "ENC[AES256_GCM,data:VG7NU9I4ZUeg3MQSUPnlGRZOO+1jotcGnF9b+ggRT6gIvvyvdDsPBS3YowpIpX1wBpzHn4D2TWre27wKg1ifvPtJd0GbXdiBwc0cGmHdm5O2wgDdr75qyyBtzusxrwSIzJL1SRw8rB02CRCCiZyFgJtf1Mj+FGJtdq1id0P6iYOq7PC0H17NMbPhtzy7M25xDKvOXx7mU4jJuNhjHLZSWGjLVv7K2SnQ/g44XpNZPMqe4TPiu5na/oOzTUTapPcGsSPMJqe0TdxSPaz8cxfZn5NxI4Erqx2aDuHywcEKMOI0jDHjGeQbuFWjTK73re+INjuFUXTs4ldj3qEryUr6jiCPVc5Y548Eqgll6dFcEZCt3NxRnhU9uGJRM/CR16WWAt7/KQl2+oMdXtps8wp8Gnise1i6PsLfgKnsCIxPe1dMuvoIdNbWsNgdsovKtFpagt+OgDFIHh4Eg0ibW9QKtrKqHwCSx5/BQIpGOuSBhDKDCZo9Gxut3UFdTZjWEqhIccqeXT56G9z1ai9dh5cHj2i7jGbhZaUgeKOWRmkqEsUbL2vh4dv3FfnIMNZe7Jo2ULvEh/OregfK0XQsanViAcHnNmuccQpfFLEnIhC9yxcLqCz0Q6TtPxlEs0Sy/YwIGK5WPDCyZZ5fst9gwegYbs0=,iv:gG8Kql3qsFr3rkU1jWMYEhZCS7Fcjbw62fTj9gbqYH0=,tag:KCFXzsgN1qSYxQrrNpQ3YA==,type:str]",
+	"sops": {
+		"kms": null,
+		"gcp_kms": [
+			{
+				"resource_id": "projects/calculis/locations/global/keyRings/sops/cryptoKeys/sops-key",
+				"created_at": "2024-11-19T10:51:22Z",
+				"enc": "CiQAsoMcmxhPhDVBwcaGyO5/Wk3lYbuvvTTMJpfwa5+vmsx84UoSSQBQEG6QOKoVjkm3vzmDGJ8cZnK+W19MqpL2iQ51F+ByxG0B763afqdC9T8eWRkXiEid1h+sPQMIN9wbwDb7V5dfiHuRXwsLU3A="
+			}
+		],
+		"azure_kv": null,
+		"hc_vault": null,
+		"age": null,
+		"lastmodified": "2024-11-25T19:09:43Z",
+		"mac": "ENC[AES256_GCM,data:g4llkmZnjjjfi/cSqoTjnePEj38JJEPGvgQyhe4FNUWCjYWpafrnWHVdPR6dMuVh9LRkV8AlEoMPIMVFybVax9E48FEmDISh5ngTYXTvZBfILtYODKidb8piEexc5hd6Y1aSGs4UkJDE8xonOwxpmYupgjBuKviGrO3rniQlSsE=,iv:1Nas97lOEDZ46BPjOjIVZrK+eV1vxmFxHnS3bTEYjUc=,tag:dAjFRM0Qp6zPXfXWRf/MOQ==,type:str]",
+		"pgp": null,
+		"unencrypted_suffix": "_unencrypted",
+		"version": "3.9.1"
+	}
+}

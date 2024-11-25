@@ -4,7 +4,8 @@ import { Component } from '@angular/core';
   selector: 'app-page-account',
   imports: [],
   templateUrl: './page-account.component.html',
-  styleUrl: './page-account.component.css'
+  styleUrl: './page-account.component.css',
+  standalone:true,
 })
 export class PageAccountComponent {
 
