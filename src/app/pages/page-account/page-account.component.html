@@ -1,9 +1,17 @@
-<p>Title: Account {{email()}}</p>
+<mat-toolbar>
+    <span>
+        Account {{email()}}
+    </span>
+</mat-toolbar>
 
-<div *ngIf="connected()">
-    <p>Supprimer les données du compte</p>
-    <button mat-button (click)="askConfirm() ? deleteAccount() : false">
-        <mat-icon>google</mat-icon>
-        Supprimer
-    </button>
-</div>
+<mat-card *ngIf="connected()">
+    <mat-card-header>
+        Supprimer les données du compte
+    </mat-card-header>
+    <mat-card-content>
+        <button mat-button (click)="askConfirm() ? deleteAccount() : false">
+            <mat-icon>delete_forever</mat-icon>
+            Supprimer
+        </button>
+    </mat-card-content>
+</mat-card>

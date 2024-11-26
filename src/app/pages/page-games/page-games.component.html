@@ -1,1 +1,13 @@
-<p>page-games works!</p>
+<mat-toolbar>
+    <span>
+        Parties
+    </span>
+</mat-toolbar>
+
+<p>{{gamesSearching()}} partie(s) en recherche</p>
+<mat-list>
+    Parties prêtes à jouer : 
+    <mat-list-item *ngFor="let game of gamesReadyToPlay()">
+        <a>#{{game.gameId}}</a>
+    </mat-list-item>
+</mat-list>
