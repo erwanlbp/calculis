@@ -1,9 +1,9 @@
-<p>Title: Account</p>
+<p>Title: Account {{email()}}</p>
 
-<div *ngIf="showDeleteAccount$ | async">
+<div *ngIf="connected()">
     <p>Supprimer les données du compte</p>
-    <button mat-button (click)="confirm('Confirmer ?') ? deleteAccount() : false" >
-        <mat-icon name="trash" slot="start"></mat-icon>
+    <button mat-button (click)="askConfirm() ? deleteAccount() : false">
+        <mat-icon>google</mat-icon>
         Supprimer
     </button>
 </div>
