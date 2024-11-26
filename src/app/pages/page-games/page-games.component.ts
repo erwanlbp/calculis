@@ -2,7 +2,7 @@ import { Component, inject, Signal } from '@angular/core';
 import { UtilsService } from '../../services/utils.service';
 import { GamesService } from '../../services/games.service';
 import { MatListModule } from '@angular/material/list';
-import { UserGame } from '../../model/game.model';
+import { UserGame } from '../../model/game/user-game';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { MatToolbarModule } from '@angular/material/toolbar';

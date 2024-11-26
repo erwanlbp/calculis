@@ -2,9 +2,9 @@ import { inject, Injectable } from '@angular/core';
 import { collection, collectionData, Firestore, getCountFromServer, query, where } from '@angular/fire/firestore';
 import { filter, map, Observable, switchMap, tap } from 'rxjs';
 import { AuthService } from './auth-service';
-import { UserGame } from '../model/game.model';
 import { Functions, httpsCallable } from '@angular/fire/functions';
-import { UtilsService } from './utils.service';
+import { UserGame } from '../model/game/user-game';
+import { Game } from '../model/game/game';
 
 @Injectable({
   providedIn: 'root'
@@ -14,6 +14,19 @@ export class GamesService {
   private authService = inject(AuthService);
   private firestore = inject(Firestore);
   private cloudFunctions = inject(Functions)
+
+  getCurrentGame$(gameId: string): Observable<Game> {
+    // check if user is log ?
+    return this.authService.getUserId$().pipe(
+      switchMap(userId => {
+        if (!userId) {
+          return {} as Game;
+        }
+        return query(collection(this.firestore, `games/${gameId}`))
+      }),
+      tap(x => console.log('x', x))
+    );
+  }
 
   getGamesSearching$(): Observable<number> {
     return this.authService.getUserId$().pipe(
