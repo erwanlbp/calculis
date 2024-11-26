@@ -1,12 +1,22 @@
-<h1>Calculis</h1>
-<nav>
-  <ul>
-    <li><a routerLink="/home">Home</a></li>
-    <li><a routerLink="/account">Account</a></li>
-    <li><a routerLink="/games">Games</a></li>
+<mat-sidenav-container class="main-container">
 
-    <button (click)="login()">Google auth</button>
-  </ul>
-</nav>
+  <mat-sidenav mode="side" opened>
+    <div>Menu</div>
+    <nav>
+      <ul>
+        <li><a routerLink="/home" routerLinkActive="active" ariaCurrentWhenActive="page">Home</a></li>
+        <li><a routerLink="/account" routerLinkActive="active" ariaCurrentWhenActive="page">Account</a></li>
+        <li><a routerLink="/games" routerLinkActive="active" ariaCurrentWhenActive="page">Games</a></li>
 
-<router-outlet/>
+        <button *ngIf="!connected()" (click)="login()">Google auth</button>
+        <button *ngIf="!!connected()" (click)="logout()">Logout</button>
+      </ul>
+    </nav>
+  </mat-sidenav>
+
+  <mat-sidenav-content>
+    <p>Calculis</p>
+    <router-outlet />
+  </mat-sidenav-content>
+
+</mat-sidenav-container>

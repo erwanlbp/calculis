@@ -1,7 +1,7 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Injectable, Signal, signal } from '@angular/core';
 import { GoogleAuthProvider } from "firebase/auth";
-import { Auth, signInWithPopup } from '@angular/fire/auth';
-import { from } from 'rxjs';
+import { Auth, authState, signInWithPopup, user } from '@angular/fire/auth';
+import { firstValueFrom, from, map, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -10,23 +10,18 @@ export class AuthService {
 
   private auth = inject(Auth);
 
-  // old
-  // public isConnected(): Observable<boolean> {
-  //   return this.fireAuth.user.pipe(map(user => !!user));
-  // }
-  //
-  // public getAuthToken(): Promise<string> {
-  //   return this.fireAuth.authState.pipe(take(1)).toPromise()
-  //     .then(user => user ? user.getIdToken() : null);
-  // }
-  //
-  // public getUserId(): Observable<string> {
-  //   return this.fireAuth.authState.pipe(map(user => user ? user.uid : null));
-  // }
-  //
-  // public getUserEmail() {
-  //   return this.fireAuth.user.pipe(map(user => user ? user.email : null));
-  // }
+  public getAuthToken(): Promise<string> {
+    return firstValueFrom(authState(this.auth))
+      .then((user: any) => user ? user.getIdToken() : null);
+  }
+
+  public getUserId$(): Observable<string> {
+    return authState(this.auth).pipe(map((user: any) => user ? user.uid : null));
+  }
+
+  getUserEmail$() {
+    return user(this.auth).pipe(map((user: any) => user ? user.email : null));
+  }
 
   public login() {
     return this.webLogin();
@@ -38,5 +33,9 @@ export class AuthService {
 
   public logout(): Promise<void> {
     return this.auth.signOut();
+  }
+
+  public isConnected$(): Observable<boolean> {
+    return user(this.auth).pipe(map(user => !!user));
   }
 }

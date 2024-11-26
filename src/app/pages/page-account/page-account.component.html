@@ -1,1 +1,9 @@
-<p>page-account works!</p>
+<p>Title: Account {{email()}}</p>
+
+<div *ngIf="connected()">
+    <p>Supprimer les données du compte</p>
+    <button mat-button (click)="askConfirm() ? deleteAccount() : false">
+        <mat-icon>google</mat-icon>
+        Supprimer
+    </button>
+</div>
