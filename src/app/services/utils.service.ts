@@ -9,6 +9,6 @@ export class UtilsService {
     private snackBar = inject(MatSnackBar);
 
     showToast(msg: string) {
-        this.snackBar.open(msg);
+        this.snackBar.open(msg, 'Fermer', { duration: 4000 });
     }
 }

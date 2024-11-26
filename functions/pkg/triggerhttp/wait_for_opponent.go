@@ -17,7 +17,7 @@ func WaitForOpponent(rw http.ResponseWriter, req *http.Request) {
 	ctx := req.Context()
 
 	userId, ok := auth.FromContext(req.Context())
-	if !ok {
+	if !ok || userId == "" {
 		slog.Error("request is missing userId in context")
 		httphelper.WriteError(rw, http.StatusUnauthorized, errors.New("not authenticated"))
 		return

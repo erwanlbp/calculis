@@ -20,4 +20,5 @@
         Mais ne quittez pas en cours de partie, sinon c'est perdu !</p>
     <p>Bonne chance !</p>
 
+    <button mat-raised-button *ngIf="connected()" (click)="waitForOpponent()">Chercher un adversaire</button>
 </div>
