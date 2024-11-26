@@ -9,6 +9,7 @@ import (
 
 	"github.com/erwanlbp/calculis/pkg/firestore"
 	"github.com/erwanlbp/calculis/pkg/level"
+	"github.com/erwanlbp/calculis/pkg/log"
 	"github.com/erwanlbp/calculis/pkg/model"
 )
 
@@ -22,7 +23,7 @@ func TryCreatingGame(ctx context.Context, userId, userGameId string) {
 
 	foundPlayerDocsnapshots, err := it.GetAll()
 	if err != nil {
-		slog.Error("failed to search for opponent", slog.String("err", err.Error()))
+		slog.Error("failed to search for opponent", log.Err(err))
 		return
 	}
 	if len(foundPlayerDocsnapshots) == 0 {
@@ -36,7 +37,7 @@ func TryCreatingGame(ctx context.Context, userId, userGameId string) {
 
 	var foundPlayerDoc model.UserGame
 	if err := foundPlayerDocsnapshot.DataTo(&foundPlayerDoc); err != nil {
-		slog.Error("failed to unmarshal user game", slog.String("err", err.Error()), slog.Any("doc", foundPlayerDocsnapshot.Data()))
+		slog.Error("failed to unmarshal user game", log.Err(err), slog.Any("doc", foundPlayerDocsnapshot.Data()))
 		return
 	}
 	slog.Info("Found user to match against", slog.String("userId", userId), slog.String("opponentId", foundPlayerDoc.UserId))
@@ -52,7 +53,7 @@ func TryCreatingGame(ctx context.Context, userId, userGameId string) {
 	if err := firestore.Client.RunTransaction(ctx, func(ctx context.Context, tx *firestorego.Transaction) error {
 		gameDoc := firestore.Client.Collection("games").NewDoc()
 		if err := tx.Set(gameDoc, model.Game{GameId: gameDoc.ID}); err != nil {
-			slog.Error("failed to create game", slog.String("err", err.Error()), slog.String("userId", userId), slog.String("opponentId", foundPlayerDoc.UserId))
+			slog.Error("failed to create game", log.Err(err), slog.String("userId", userId), slog.String("opponentId", foundPlayerDoc.UserId))
 			return err
 		}
 		slog.Info("Created game " + gameDoc.ID)
@@ -60,7 +61,7 @@ func TryCreatingGame(ctx context.Context, userId, userGameId string) {
 		for _, p := range players {
 			gameUserDoc := firestore.Client.Doc(fmt.Sprintf("games/%s/gameusers/%s", gameDoc.ID, p.UserId))
 			if err := tx.Set(gameUserDoc, model.GameUser{UserPersonalGameId: p.UserGameId}); err != nil {
-				slog.Error("failed to create gameuser doc", slog.String("err", err.Error()), slog.String("gameId", gameDoc.ID), slog.String("userId", p.UserId))
+				slog.Error("failed to create gameuser doc", log.Err(err), slog.String("gameId", gameDoc.ID), slog.String("userId", p.UserId))
 				return err
 			}
 			slog.Info("Created game user", slog.String("gameId", gameDoc.ID), slog.String("userId", p.UserId), slog.String("usergame", p.UserGameId))
@@ -70,7 +71,7 @@ func TryCreatingGame(ctx context.Context, userId, userGameId string) {
 				{Path: "status", Value: model.StatusPlaying},
 				{Path: "gameId", Value: gameDoc.ID},
 			}); err != nil {
-				slog.Error("failed to update usergame doc", slog.String("err", err.Error()), slog.String("gameId", gameDoc.ID), slog.String("userId", p.UserId), slog.String("usergame", p.UserGameId))
+				slog.Error("failed to update usergame doc", log.Err(err), slog.String("gameId", gameDoc.ID), slog.String("userId", p.UserId), slog.String("usergame", p.UserGameId))
 				return err
 			}
 			slog.Info("Updated user game", slog.String("gameId", gameDoc.ID), slog.String("userId", p.UserId), slog.String("usergame", p.UserGameId))
@@ -87,6 +88,6 @@ func TryCreatingGame(ctx context.Context, userId, userGameId string) {
 
 		return nil
 	}); err != nil {
-		slog.Error("game creation tx failed", slog.String("err", err.Error()))
+		slog.Error("game creation tx failed", log.Err(err))
 	}
 }

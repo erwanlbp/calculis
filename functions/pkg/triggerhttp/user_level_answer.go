@@ -35,7 +35,7 @@ func UserLevelAnswer(rw http.ResponseWriter, req *http.Request) {
 		Answer  int    `json:"answer"`
 	}
 	if err := json.NewDecoder(req.Body).Decode(&body); err != nil {
-		slog.Error("failed to decode body", slog.String("err", err.Error()))
+		slog.Error("failed to decode body", log.Err(err))
 		httphelper.WriteError(rw, http.StatusBadRequest, fmt.Errorf("failed to decode body: %w", err))
 		return
 	}

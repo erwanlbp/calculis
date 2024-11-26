@@ -34,3 +34,4 @@ calculis.keystore
 .firebase/
 .gradle/
 debug-signing.properties
+.angular
