@@ -1,1 +1,9 @@
-<p>page-account works!</p>
+<p>Title: Account</p>
+
+<div *ngIf="showDeleteAccount$ | async">
+    <p>Supprimer les données du compte</p>
+    <button mat-button (click)="confirm('Confirmer ?') ? deleteAccount() : false" >
+        <mat-icon name="trash" slot="start"></mat-icon>
+        Supprimer
+    </button>
+</div>

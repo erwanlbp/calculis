@@ -1,7 +1,7 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Injectable, Signal, signal } from '@angular/core';
 import { GoogleAuthProvider } from "firebase/auth";
-import { Auth, signInWithPopup } from '@angular/fire/auth';
-import { from } from 'rxjs';
+import { Auth, signInWithPopup, user } from '@angular/fire/auth';
+import { from, map, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -10,10 +10,6 @@ export class AuthService {
 
   private auth = inject(Auth);
 
-  // old
-  // public isConnected(): Observable<boolean> {
-  //   return this.fireAuth.user.pipe(map(user => !!user));
-  // }
   //
   // public getAuthToken(): Promise<string> {
   //   return this.fireAuth.authState.pipe(take(1)).toPromise()
@@ -38,5 +34,9 @@ export class AuthService {
 
   public logout(): Promise<void> {
     return this.auth.signOut();
+  }
+
+  public isConnected(): Signal<boolean> {
+    return signal(user(this.auth).pipe(map(user => !!user)));
   }
 }
