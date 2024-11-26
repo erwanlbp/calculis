@@ -4,10 +4,10 @@
     </span>
 </mat-toolbar>
 
-<p>{{gamesSearching()}} partie(s) en recherche</p>
+<p>{{ gamesSearching() }} partie(s) en recherche</p>
 <mat-list>
-    Parties prêtes à jouer : 
-    <mat-list-item *ngFor="let game of gamesReadyToPlay()">
-        <a>#{{game.gameId}}</a>
-    </mat-list-item>
+  Parties prêtes à jouer :
+  <mat-list-item *ngFor="let game of gamesReadyToPlay()">
+    <a [routerLink]="['/games', game.gameId]">#{{ game.gameId }}</a>
+  </mat-list-item>
 </mat-list>

@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
-import { collection, Firestore, where, query, getCountFromServer, docSnapshots, collectionData } from '@angular/fire/firestore';
-import { filter, firstValueFrom, map, Observable, switchMap, tap } from 'rxjs';
+import { collection, collectionData, Firestore, getCountFromServer, query, where } from '@angular/fire/firestore';
+import { filter, map, Observable, switchMap, tap } from 'rxjs';
 import { AuthService } from './auth-service';
 import { UserGame } from '../model/game.model';
 
@@ -13,7 +13,7 @@ export class GamesService {
   private firestore = inject(Firestore);
 
   getGamesSearching$(): Observable<number> {
-    let res = this.authService.getUserId$().pipe(
+    return this.authService.getUserId$().pipe(
       map(userId => {
         if (!userId) {
           return null;
@@ -24,7 +24,6 @@ export class GamesService {
       switchMap(q => getCountFromServer(q)),
       map(q => q.data().count),
     );
-    return res;
   }
 
   getGamesReady$(): Observable<UserGame[]> {
@@ -35,7 +34,7 @@ export class GamesService {
         }
         return collectionData(query(collection(this.firestore, `users/${userId}/usergames`), where('status', '==', 'playing')))
       }),
-      tap(x => console.log('x',x)),
+      tap(x => console.log('x', x)),
     );
   }
 }
