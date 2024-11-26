@@ -1,17 +1,30 @@
 <mat-sidenav-container class="main-container">
 
   <mat-sidenav mode="side" opened>
-    <div>Menu</div>
-    <nav>
-      <ul>
-        <li><a routerLink="/home" routerLinkActive="active" ariaCurrentWhenActive="page">Home</a></li>
-        <li><a routerLink="/account" routerLinkActive="active" ariaCurrentWhenActive="page">Account</a></li>
-        <li><a routerLink="/games" routerLinkActive="active" ariaCurrentWhenActive="page">Games</a></li>
 
-        <button *ngIf="!connected()" (click)="login()">Google auth</button>
-        <button *ngIf="!!connected()" (click)="logout()">Logout</button>
-      </ul>
-    </nav>
+    <mat-toolbar>
+      <span>Menu</span>
+      <span class="spacer"></span>
+      <button mat-button *ngIf="!!connected()" title="Déconnexion" (click)="logout()">
+        <mat-icon>logout</mat-icon>
+        Déconnexion
+      </button>
+      <button mat-button *ngIf="!connected()" title="Connexion Google" (click)="login()">
+        <mat-icon>login</mat-icon>
+        Connexion
+      </button>
+
+    </mat-toolbar>
+
+    <mat-list>
+      <mat-list-item *ngFor="let item of menuItems">
+        <a mat-button routerLink="{{item.link}}" routerLinkActive="active" ariaCurrentWhenActive="page">
+          <mat-icon matListItemIcon>{{item.icon}}</mat-icon>
+          {{item.label}}
+        </a>
+      </mat-list-item>
+    </mat-list>
+
   </mat-sidenav>
 
   <mat-sidenav-content>

@@ -7,6 +7,12 @@ decrypt: # Decrypt config files
 start: # Local start the app
 	npm run start
 
+build-web: # Build web app in prod mode
+	npm run build
+
+deploy-web-preprod: build-web # Build and deploy preprod
+	firebase hosting:channel:deploy preprod
+
 deploy-all-functions: # Deploy Go backend functions
 	make deploy-function-OnUserDelete 
 	make deploy-function-WaitForOpponent

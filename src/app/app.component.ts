@@ -2,9 +2,13 @@ import { CommonModule } from '@angular/common';
 import { Component, inject, Signal } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { AuthService } from './services/auth-service';
-import { MatGridListModule } from '@angular/material/grid-list';
+import { MatListModule } from '@angular/material/list';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { MatIconModule } from '@angular/material/icon';
+import {MatButtonModule} from '@angular/material/button';
+import {MatToolbarModule} from '@angular/material/toolbar';
+
 
 @Component({
   selector: 'app-root',
@@ -14,6 +18,10 @@ import { toSignal } from '@angular/core/rxjs-interop';
     RouterLink,
     RouterLinkActive,
     MatSidenavModule,
+    MatListModule,
+    MatButtonModule,
+    MatIconModule,
+    MatToolbarModule,
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
@@ -23,6 +31,13 @@ export class AppComponent {
   authService: AuthService = inject(AuthService);
 
   title = 'calculis';
+
+
+  menuItems = [
+    { link: '/home', icon: 'home' , label: 'Home', },
+    { link: '/games', icon: '123' , label: 'Games', },
+    { link: '/account', icon: 'person' , label: 'Account', },
+  ]
 
   connected: Signal<boolean>;
 

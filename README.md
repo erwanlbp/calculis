@@ -55,28 +55,10 @@ adb devices # To detect connected device
 ionic cordova run android --livereload --debug --device --consolelogs
 ```
 
-## Deploy web app
+## Deploy preprod web app
 
 ```bash
-# ⚠️ Update the app version in package.json !
-
-# make sure you are building with npm lts/iron
-nvm use lts/iron
-
-# build
-npm run build
-
-# use npm lts/iron to deploy (firebase needs >=18)
-nvm use lts/iron
-
-# deploy in preprod
-firebase hosting:channel:deploy preprod
-
-# OR deploy in prod
-firebase deploy --message <app_version_number>
-
-# go back to npm lts/iron to develop more
-nvm use lts/iron
+make deploy-web-preprod
 ```
 
 ----
