@@ -13,6 +13,7 @@ deploy-hosting: # Deploy front app to firebase hosting
 deploy-all-functions: # Deploy Go backend functions
 	make deploy-function-OnUserDelete 
 	make deploy-function-WaitForOpponent
+	make deploy-function-UserLevelAnswer
 
 deploy-function-OnUserDelete: # Deploy Go backend function
 	gcloud functions deploy OnUserDelete --region europe-west1 --runtime go123 --gen2 --project calculis \
@@ -24,6 +25,12 @@ deploy-function-OnUserDelete: # Deploy Go backend function
 
 deploy-function-WaitForOpponent: # Deploy Go backend function
 	gcloud functions deploy WaitForOpponent --region europe-west1 --runtime go123 --gen2 --project calculis \
+--source=functions \
+--trigger-http \
+--allow-unauthenticated
+
+deploy-function-UserLevelAnswer: # Deploy Go backend function
+	gcloud functions deploy UserLevelAnswer --region europe-west1 --runtime go123 --gen2 --project calculis \
 --source=functions \
 --trigger-http \
 --allow-unauthenticated
