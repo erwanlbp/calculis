@@ -1,14 +1,14 @@
-import { Injectable } from '@angular/core';
-import { AngularFireAuth } from '@angular/fire/compat/auth';
+import { inject, Injectable } from '@angular/core';
 import { GoogleAuthProvider } from "firebase/auth";
+import { Auth, signInWithPopup } from '@angular/fire/auth';
+import { from } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
-  constructor(private fireAuth: AngularFireAuth) {
-  }
+  private auth = inject(Auth);
 
   // old
   // public isConnected(): Observable<boolean> {
@@ -33,10 +33,10 @@ export class AuthService {
   }
 
   private webLogin() {
-    return this.fireAuth.signInWithPopup(new GoogleAuthProvider());
+    return from(signInWithPopup(this.auth, new GoogleAuthProvider()));
   }
 
   public logout(): Promise<void> {
-    return this.fireAuth.signOut();
+    return this.auth.signOut();
   }
 }
