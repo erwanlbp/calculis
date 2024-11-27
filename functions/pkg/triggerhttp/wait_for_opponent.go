@@ -10,6 +10,7 @@ import (
 	"github.com/erwanlbp/calculis/pkg/firestore"
 	"github.com/erwanlbp/calculis/pkg/game"
 	"github.com/erwanlbp/calculis/pkg/httphelper"
+	"github.com/erwanlbp/calculis/pkg/log"
 	"github.com/erwanlbp/calculis/pkg/model"
 )
 
@@ -25,7 +26,7 @@ func WaitForOpponent(rw http.ResponseWriter, req *http.Request) {
 
 	doc := firestore.Client.Collection(fmt.Sprintf("users/%s/usergames", userId)).NewDoc()
 	if _, err := doc.Set(ctx, model.UserGame{Status: model.StatusSearching, UserId: userId}); err != nil {
-		slog.Error("failed to create user game", slog.String("err", err.Error()))
+		slog.Error("failed to create user game", log.Err(err))
 		httphelper.WriteError(rw, http.StatusInternalServerError, err)
 		return
 	}
