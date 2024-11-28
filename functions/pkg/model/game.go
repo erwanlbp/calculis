@@ -1,12 +1,13 @@
 package model
 
 type UserGame struct {
+	GameID string `firestore:"gameId,omitempty"`
 	Status Status `firestore:"status,omitempty"`
-	UserId string `firestore:"userId,omitempty"`
+	UserID string `firestore:"userId,omitempty"`
 }
 
 type Game struct {
-	GameId     string     `firestore:"gameId,omitempty"`
+	GameID     string     `firestore:"gameId,omitempty"`
 	Difficulty Difficulty `firestore:"difficulty,omitempty"`
 }
 

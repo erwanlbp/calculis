@@ -31,7 +31,7 @@ func WaitForOpponent(rw http.ResponseWriter, req *http.Request) {
 	logger = logger.With(log.UserID(userId))
 
 	doc := firestore.Client.Collection(fmt.Sprintf("users/%s/usergames", userId)).NewDoc()
-	if _, err := doc.Set(ctx, model.UserGame{Status: model.StatusSearching, UserId: userId}); err != nil {
+	if _, err := doc.Set(ctx, model.UserGame{GameID: doc.ID, Status: model.StatusSearching, UserID: userId}); err != nil {
 		logger.Error("failed to create user game", log.Err(err))
 		httphelper.WriteError(rw, http.StatusInternalServerError, err)
 		return

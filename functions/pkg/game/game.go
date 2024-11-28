@@ -40,7 +40,7 @@ func TryCreatingGame(ctx context.Context, logger *slog.Logger, userId, userGameI
 		return
 	}
 
-	logger = logger.With(slog.String("opponentId", foundPlayerDoc.UserId))
+	logger = logger.With(slog.String("opponentId", foundPlayerDoc.UserID))
 
 	logger.Info("Found user to match against")
 
@@ -49,12 +49,12 @@ func TryCreatingGame(ctx context.Context, logger *slog.Logger, userId, userGameI
 		UserGameId string
 	}{
 		{UserId: userId, UserGameId: userGameId},
-		{UserId: foundPlayerDoc.UserId, UserGameId: foundPlayerDocsnapshot.Ref.ID},
+		{UserId: foundPlayerDoc.UserID, UserGameId: foundPlayerDocsnapshot.Ref.ID},
 	}
 
 	if err := firestore.Client.RunTransaction(ctx, func(ctx context.Context, tx *firestorego.Transaction) error {
 		gameDoc := firestore.Client.Collection("games").NewDoc()
-		if err := tx.Set(gameDoc, model.Game{GameId: gameDoc.ID}); err != nil {
+		if err := tx.Set(gameDoc, model.Game{GameID: gameDoc.ID}); err != nil {
 			logger.Error("failed to create game", log.Err(err))
 			return err
 		}
@@ -70,7 +70,7 @@ func TryCreatingGame(ctx context.Context, logger *slog.Logger, userId, userGameI
 			logger.Info("Created game user")
 
 			newUserGameDoc := firestore.Client.Doc(fmt.Sprintf("users/%s/usergames/%s", player.UserId, gameDoc.ID))
-			if err := tx.Set(newUserGameDoc, model.UserGame{Status: model.StatusPlaying}); err != nil {
+			if err := tx.Set(newUserGameDoc, model.UserGame{GameID: gameDoc.ID, Status: model.StatusPlaying}); err != nil {
 				logger.Error("failed to create usergame doc", log.Err(err))
 				return err
 			}
