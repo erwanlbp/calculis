@@ -96,7 +96,7 @@ func TryCreatingGame(ctx context.Context, logger *slog.Logger, userId, userGameI
 
 		return nil
 	}); err != nil {
-		slog.Error("game creation tx failed", log.Err(err))
+		logger.Error("game creation tx failed", log.Err(err))
 	}
 }
 

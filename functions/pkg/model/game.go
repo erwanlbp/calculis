@@ -7,8 +7,9 @@ type UserGame struct {
 }
 
 type Game struct {
-	GameID     string     `firestore:"gameId,omitempty"`
-	Difficulty Difficulty `firestore:"difficulty,omitempty"`
+	GameID       string     `firestore:"gameId,omitempty"`
+	Difficulty   Difficulty `firestore:"difficulty,omitempty"`
+	CurrentLevel string     `firestore:"currentLevelId,omitempty"`
 }
 
 type GameUser struct {

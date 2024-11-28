@@ -33,8 +33,8 @@ func UserLevelAnswer(rw http.ResponseWriter, req *http.Request) {
 	}
 
 	var body struct {
-		GameID  string `json:"gameId"`
-		LevelID string `json:"levelId"`
+		GameID  string `json:"game_id"`
+		LevelID string `json:"level_id"`
 		Answer  int    `json:"answer"`
 	}
 	if err := json.NewDecoder(req.Body).Decode(&body); err != nil {

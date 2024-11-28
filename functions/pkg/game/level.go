@@ -59,6 +59,11 @@ func GenerateLevel(ctx context.Context, tx *firestorego.Transaction, dto Generat
 		return fmt.Errorf("failed to add level doc: %w", err)
 	}
 
+	gameRef := firestore.Client.Doc(fmt.Sprintf("games/%s", dto.GameId))
+	if err := tx.Update(gameRef, []firestorego.Update{{Path: "currentLevelId", Value: fmt.Sprint(dto.LevelNumber)}}); err != nil {
+		return fmt.Errorf("failed to update game current level: %w", err)
+	}
+
 	return nil
 }
 
