@@ -70,9 +70,7 @@ func TryCreatingGame(ctx context.Context, logger *slog.Logger, userId, userGameI
 			logger.Info("Created game user")
 
 			newUserGameDoc := firestore.Client.Doc(fmt.Sprintf("users/%s/usergames/%s", player.UserId, gameDoc.ID))
-			if err := tx.Update(newUserGameDoc, []firestorego.Update{
-				{Path: "status", Value: model.StatusPlaying},
-			}); err != nil {
+			if err := tx.Set(newUserGameDoc, model.UserGame{Status: model.StatusPlaying}); err != nil {
 				logger.Error("failed to create usergame doc", log.Err(err))
 				return err
 			}
