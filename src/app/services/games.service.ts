@@ -22,10 +22,14 @@ export class GamesService {
         if (!userId) {
           return {} as Game;
         }
-        return docData(query(collection(this.firestore, `games/${gameId}`)))
+        return docData(doc(this.firestore, `games/${gameId}`))
       }),
       tap(x => console.log('x', x))
     );
+  }
+
+  getGameLevel$(gameId: string, levelId: string): Observable<Game> {
+    return docData(doc(this.firestore, `games/${gameId}/gamelevels/${levelId}`))
   }
 
   getGamesSearching$(): Observable<number> {
@@ -56,5 +60,16 @@ export class GamesService {
   waitForOpponent(): Promise<string> {
     return httpsCallable<{}, { data: { game_id: string } }>(this.cloudFunctions, 'WaitForOpponent')()
       .then((res) => res.data.data?.game_id)
+  }
+
+  answerLevel(game_id: string, level_id: string, answer: number): Promise<boolean> {
+    interface Body {
+      game_id: string
+      level_id: string
+      answer: number
+    }
+
+    return httpsCallable<Body, { data: { correct: boolean, correct_answer: number } }>(this.cloudFunctions, 'UserLevelAnswer')({ game_id, level_id, answer })
+      .then((res) => res.data.data?.correct)
   }
 }
