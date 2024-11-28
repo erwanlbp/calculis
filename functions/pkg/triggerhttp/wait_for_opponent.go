@@ -15,24 +15,30 @@ import (
 )
 
 func WaitForOpponent(rw http.ResponseWriter, req *http.Request) {
+	// TODO Add lock per user
+
 	ctx := req.Context()
 
-	userId, ok := auth.FromContext(req.Context())
+	logger := slog.Default().With(log.Caller("WaitForOpponent"))
+
+	userId, ok := auth.FromContext(ctx)
 	if !ok {
-		slog.Error("request is missing userId in context")
+		logger.Error("request is missing userId in context")
 		httphelper.WriteError(rw, http.StatusUnauthorized, errors.New("not authenticated"))
 		return
 	}
 
+	logger = logger.With(log.UserID(userId))
+
 	doc := firestore.Client.Collection(fmt.Sprintf("users/%s/usergames", userId)).NewDoc()
 	if _, err := doc.Set(ctx, model.UserGame{Status: model.StatusSearching, UserId: userId}); err != nil {
-		slog.Error("failed to create user game", log.Err(err))
+		logger.Error("failed to create user game", log.Err(err))
 		httphelper.WriteError(rw, http.StatusInternalServerError, err)
 		return
 	}
 
 	// Will try to create a game, if it fails, no problem, someone will find this user searching next time
-	game.TryCreatingGame(req.Context(), userId, doc.ID)
+	game.TryCreatingGame(ctx, logger, userId, doc.ID)
 
 	httphelper.WriteJSON(rw, http.StatusOK, map[string]string{
 		"game_id": doc.ID,

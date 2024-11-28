@@ -11,5 +11,4 @@ type Game struct {
 }
 
 type GameUser struct {
-	UserPersonalGameId string `firestore:"userPersonalGameId,omitempty"`
 }
