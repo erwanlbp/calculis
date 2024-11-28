@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { collection, collectionData, Firestore, getCountFromServer, query, where } from '@angular/fire/firestore';
+import { collection, collectionData, Firestore, getCountFromServer, query, where, doc, getDoc, docData } from '@angular/fire/firestore';
 import { filter, map, Observable, switchMap, tap } from 'rxjs';
 import { AuthService } from './auth-service';
 import { Functions, httpsCallable } from '@angular/fire/functions';
@@ -22,7 +22,7 @@ export class GamesService {
         if (!userId) {
           return {} as Game;
         }
-        return query(collection(this.firestore, `games/${gameId}`))
+        return docData(query(collection(this.firestore, `games/${gameId}`)))
       }),
       tap(x => console.log('x', x))
     );
