@@ -2,6 +2,8 @@ import { GameLevel } from './game-level';
 import { GameUser } from './game-user';
 
 export interface Game {
-  gameLevels: GameLevel[];
-  gameUsers: GameUser[];
+  gameId: string
+  currentLevelId: string
 }
+
+export const emptyGame: Game = { gameId: 'unknown', currentLevelId: '1' }

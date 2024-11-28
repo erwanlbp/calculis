@@ -1,1 +1,8 @@
 <p>game-start works!</p>
+
+<mat-form-field>
+    <mat-label>Answer</mat-label>
+    <input matInput placeholder="-3 or 3" #answerInput>
+</mat-form-field>
+
+<button mat-button (click)="answer(answerInput.value)">Envoyer</button>
