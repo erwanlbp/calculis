@@ -42,12 +42,13 @@ func UserLevelAnswer(rw http.ResponseWriter, req *http.Request) {
 			Answer  int    `json:"answer"`
 		} `json:"data"`
 	}
-	body := data.Data
 	if err := json.NewDecoder(req.Body).Decode(&data); err != nil {
 		slog.Error("failed to decode body", log.Err(err))
 		httphelper.WriteError(rw, http.StatusBadRequest, fmt.Errorf("failed to decode body: %w", err))
 		return
 	}
+	debug.JSON(data)
+	body := data.Data
 	if body.GameID == "" {
 		httphelper.WriteError(rw, http.StatusBadRequest, errors.New("missing gameId"))
 		return
@@ -93,7 +94,7 @@ func UserLevelAnswer(rw http.ResponseWriter, req *http.Request) {
 		}
 
 		// Update usergame status
-		userGameRef := firestore.Client.Doc(fmt.Sprintf("/users/%s/usergames/%s", userId, body.GameID))
+		userGameRef := firestore.Client.Doc(fmt.Sprintf("users/%s/usergames/%s", userId, body.GameID))
 		if err := tx.Update(userGameRef, []firestorego.Update{{Path: "status", Value: model.StatusWaiting}}); err != nil {
 			logger.Error("failed to update usergame doc", log.Err(err))
 			return fmt.Errorf("failed to update usergame doc: %w", err)
