@@ -13,6 +13,7 @@ import (
 	"google.golang.org/grpc/status"
 
 	"github.com/erwanlbp/calculis/pkg/auth"
+	"github.com/erwanlbp/calculis/pkg/debug"
 	"github.com/erwanlbp/calculis/pkg/firestore"
 	"github.com/erwanlbp/calculis/pkg/game"
 	"github.com/erwanlbp/calculis/pkg/httphelper"
@@ -31,6 +32,8 @@ func UserLevelAnswer(rw http.ResponseWriter, req *http.Request) {
 		httphelper.WriteError(rw, http.StatusUnauthorized, errors.New("not authenticated"))
 		return
 	}
+
+	debug.DumpHTTPRequest(req)
 
 	var data struct {
 		Data struct {
