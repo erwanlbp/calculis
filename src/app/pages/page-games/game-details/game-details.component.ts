@@ -5,8 +5,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { switchMap, tap } from 'rxjs';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { filter, switchMap } from 'rxjs';
 import { GameState } from '../../../model/game/game-state';
 import { LevelEndComponent } from '../level-end/level-end.component';
 import { LevelStartComponent } from '../level-start/level-start.component';
@@ -41,13 +41,15 @@ export class GameDetailsComponent {
     this.game = toSignal(
       this.activatedRoute.params.pipe(
         switchMap(params => this.gameService.getCurrentGame$(params["gameId"])),
-        tap(game => console.log('usergame', game))
       ), {initialValue: emptyUserGame}
     )
 
     this.gameLevel = toSignal(
-      this.gameService.getGameLevel$(this.game().gameId, this.game().currentLevelId).pipe(
-        tap(level => console.log('level ' + level))
+      toObservable(this.game).pipe(
+        filter(t => t.gameId !== 'unknown'),
+        switchMap(userGame => {
+          return this.gameService.getGameLevel$(userGame.gameId, userGame.currentLevelId)
+        })
       ), {initialValue: emptyLevel}
     )
 

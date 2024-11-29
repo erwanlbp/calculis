@@ -22,15 +22,15 @@ export class GamesService {
         if (!userId) {
           return;
         }
+        console.log(`before : users/${userId}/usergames/${gameId}`)
         return docData(doc(this.firestore, `users/${userId}/usergames/${gameId}`))
-      })
+      }),
+      tap(r => console.log('after r ' + r.gameId))
     );
   }
 
   getGameLevel$(gameId: string, levelId: string): Observable<GameLevel> {
-    return docData(doc(this.firestore, `games/${gameId}/gamelevels/${levelId}`)).pipe(
-      tap(res => console.log('res ' + res))
-    )
+    return docData(doc(this.firestore, `games/${gameId}/gamelevels/${levelId}`))
   }
 
   getGamesSearching$(): Observable<number> {

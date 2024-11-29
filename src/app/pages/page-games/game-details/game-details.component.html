@@ -1,5 +1,3 @@
-Résumé des anciens levels ?
-
 <div>
   To skip level
   <app-level-end
@@ -18,9 +16,9 @@ Résumé des anciens levels ?
     <button (click)="startLevel()">Start</button>
   </div>
   <div *ngIf="gameState() === gameStateType.IN_PROGRESS">
-    <!--    <app-level-start-->
-    <!--      [numbers]="gameLevel().numbers"-->
-    <!--    />-->
+    <app-level-start
+      [numbers]="gameLevel().numbers"
+    />
   </div>
   <div *ngIf="gameState() === gameStateType.END">
     <app-level-end
