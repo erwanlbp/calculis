@@ -1,9 +1,10 @@
 package model
 
 type UserGame struct {
-	GameID string `firestore:"gameId,omitempty"`
-	Status Status `firestore:"status,omitempty"`
-	UserID string `firestore:"userId,omitempty"`
+	GameID         string `firestore:"gameId,omitempty"`
+	Status         Status `firestore:"status,omitempty"`
+	UserID         string `firestore:"userId,omitempty"`
+	CurrentLevelID string `firestore:"currentLevelId,omitempty"`
 }
 
 type Game struct {

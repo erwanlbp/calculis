@@ -45,7 +45,7 @@ type GenerateLevelDto struct {
 	Config       model.LevelConfig
 }
 
-func GenerateLevel(ctx context.Context, tx *firestorego.Transaction, dto GenerateLevelDto) error {
+func GenerateLevel(ctx context.Context, tx *firestorego.Transaction, dto GenerateLevelDto) (string, error) {
 	data := model.GameLevel{
 		LevelNumber:  dto.LevelNumber,
 		Status:       model.StatusPlaying,
@@ -56,15 +56,15 @@ func GenerateLevel(ctx context.Context, tx *firestorego.Transaction, dto Generat
 
 	levelRef := firestore.Client.Doc(fmt.Sprintf("games/%s/gamelevels/%d", dto.GameId, dto.LevelNumber))
 	if err := tx.Set(levelRef, data); err != nil {
-		return fmt.Errorf("failed to add level doc: %w", err)
+		return "", fmt.Errorf("failed to add level doc: %w", err)
 	}
 
 	gameRef := firestore.Client.Doc(fmt.Sprintf("games/%s", dto.GameId))
 	if err := tx.Update(gameRef, []firestorego.Update{{Path: "currentLevelId", Value: fmt.Sprint(dto.LevelNumber)}}); err != nil {
-		return fmt.Errorf("failed to update game current level: %w", err)
+		return "", fmt.Errorf("failed to update game current level: %w", err)
 	}
 
-	return nil
+	return levelRef.ID, nil
 }
 
 func FinishLevel(ctx context.Context, logger *slog.Logger, gameID, levelID string) {
@@ -93,11 +93,25 @@ func FinishLevel(ctx context.Context, logger *slog.Logger, gameID, levelID strin
 
 		status, correctUsers := level.StatusAfterFinish()
 
+		var levelID string
+		if status == model.LevelStatusAllUsersCorrect || status == model.LevelStatusMultipleUsersCorrect {
+			lid, err := GenerateLevel(ctx, tx, GenerateLevelDto{
+				GameId:       gameID,
+				LevelNumber:  level.LevelNumber + 1,
+				PlayersCount: len(correctUsers[true]),
+				Config:       level.Config,
+			})
+			if err != nil {
+				return fmt.Errorf("failed to create game level(%d): %w", level.LevelNumber+1, err)
+			}
+			levelID = lid
+		}
+
 		switch status {
 		case model.LevelStatusNoUserCorrect:
 			// If all users lost, that's a tie (for now)
 			for _, userId := range correctUsers[false] {
-				if err := SetUserGameStatus(ctx, tx, userId, gameID, model.StatusTie); err != nil {
+				if err := UpdateUserGame(ctx, tx, userId, gameID, model.StatusTie, ""); err != nil {
 					return fmt.Errorf("failed to update user(%s) game status(%s): %w", userId, model.StatusTie, err)
 				}
 			}
@@ -107,13 +121,13 @@ func FinishLevel(ctx context.Context, logger *slog.Logger, gameID, levelID strin
 		case model.LevelStatusOnlyOneCorrect:
 			// For users that lost, mark their game as lost
 			for _, userId := range correctUsers[false] {
-				if err := SetUserGameStatus(ctx, tx, userId, gameID, model.StatusLost); err != nil {
+				if err := UpdateUserGame(ctx, tx, userId, gameID, model.StatusLost, ""); err != nil {
 					return fmt.Errorf("failed to update user(%s) game status(%s): %w", userId, model.StatusLost, err)
 				}
 			}
 			// For the user that won, mark his game as won
 			for _, userId := range correctUsers[true] {
-				if err := SetUserGameStatus(ctx, tx, userId, gameID, model.StatusWon); err != nil {
+				if err := UpdateUserGame(ctx, tx, userId, gameID, model.StatusWon, ""); err != nil {
 					return fmt.Errorf("failed to update user(%s) game status(%s): %w", userId, model.StatusWon, err)
 				}
 			}
@@ -123,19 +137,18 @@ func FinishLevel(ctx context.Context, logger *slog.Logger, gameID, levelID strin
 		case model.LevelStatusMultipleUsersCorrect:
 			// For users that lost, mark their game as lost
 			for _, userId := range correctUsers[false] {
-				if err := SetUserGameStatus(ctx, tx, userId, gameID, model.StatusLost); err != nil {
+				if err := UpdateUserGame(ctx, tx, userId, gameID, model.StatusLost, ""); err != nil {
 					return fmt.Errorf("failed to update user(%s) game status(%s): %w", userId, model.StatusLost, err)
 				}
 			}
 			fallthrough
 		case model.LevelStatusAllUsersCorrect:
-			if err := GenerateLevel(ctx, tx, GenerateLevelDto{
-				GameId:       gameID,
-				LevelNumber:  level.LevelNumber + 1,
-				PlayersCount: len(correctUsers[true]),
-				Config:       level.Config,
-			}); err != nil {
-				return fmt.Errorf("failed to create game level(%d): %w", level.LevelNumber+1, err)
+			// Next level is already generated
+			// Update current level for usergames
+			for _, userId := range correctUsers[true] {
+				if err := UpdateUserGame(ctx, tx, userId, gameID, "", levelID); err != nil {
+					return fmt.Errorf("failed to update user(%s) game level(%s): %w", userId, levelID, err)
+				}
 			}
 		default:
 			logger.Error("unplanned level status after finish, can't continue", log.EndLevelStatus(status))

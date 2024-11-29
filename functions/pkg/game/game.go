@@ -58,7 +58,20 @@ func TryCreatingGame(ctx context.Context, logger *slog.Logger, userId, userGameI
 			logger.Error("failed to create game", log.Err(err))
 			return err
 		}
+		logger = logger.With(log.GameID(gameDoc.ID))
+
 		logger.Info("Created game")
+
+		// Create first level
+		levelID, err := GenerateLevel(ctx, tx, GenerateLevelDto{
+			LevelNumber: 1,
+			GameId:      gameDoc.ID,
+			Config:      DefaultConfig, // TODO Change that to have different kind of games
+		})
+		if err != nil {
+			return fmt.Errorf("failed to create game first level: %w", err)
+		}
+		logger = logger.With(log.LevelID(levelID))
 
 		for _, player := range players {
 			logger := logger.With(log.PlayerID(player.UserId), log.UserGameID(player.UserGameId))
@@ -70,7 +83,7 @@ func TryCreatingGame(ctx context.Context, logger *slog.Logger, userId, userGameI
 			logger.Info("Created game user")
 
 			newUserGameDoc := firestore.Client.Doc(fmt.Sprintf("users/%s/usergames/%s", player.UserId, gameDoc.ID))
-			if err := tx.Set(newUserGameDoc, model.UserGame{GameID: gameDoc.ID, Status: model.StatusPlaying}); err != nil {
+			if err := tx.Set(newUserGameDoc, model.UserGame{GameID: gameDoc.ID, Status: model.StatusPlaying, CurrentLevelID: levelID}); err != nil {
 				logger.Error("failed to create usergame doc", log.Err(err))
 				return err
 			}
@@ -83,16 +96,7 @@ func TryCreatingGame(ctx context.Context, logger *slog.Logger, userId, userGameI
 			logger.Info("Deleted user game searching doc")
 		}
 
-		// Create first level
-		if err := GenerateLevel(ctx, tx, GenerateLevelDto{
-			LevelNumber: 1,
-			GameId:      gameDoc.ID,
-			Config:      DefaultConfig, // TODO Change that to have different kind of games
-		}); err != nil {
-			return fmt.Errorf("failed to create game first level: %w", err)
-		}
-
-		logger.Info("Generated game level 1")
+		logger.Info("Generated game level")
 
 		return nil
 	}); err != nil {
@@ -105,7 +109,19 @@ func SetGameStatus(ctx context.Context, tx *firestorego.Transaction, gameID stri
 	return tx.Update(ref, []firestorego.Update{{Path: "status", Value: status}})
 }
 
-func SetUserGameStatus(ctx context.Context, tx *firestorego.Transaction, userID, gameID string, status model.Status) error {
+func UpdateUserGame(ctx context.Context, tx *firestorego.Transaction, userID, gameID string, status model.Status, levelID string) error {
+	var updates []firestorego.Update
+
+	if status != "" {
+		updates = append(updates, firestorego.Update{Path: "status", Value: status})
+	}
+	if levelID != "" {
+		updates = append(updates, firestorego.Update{Path: "currentLevelId", Value: levelID})
+	}
+	if len(updates) == 0 {
+		return nil
+	}
+
 	ref := firestore.Client.Doc(fmt.Sprintf("users/%s/usergames/%s", userID, gameID))
-	return tx.Update(ref, []firestorego.Update{{Path: "status", Value: status}})
+	return tx.Update(ref, updates)
 }
