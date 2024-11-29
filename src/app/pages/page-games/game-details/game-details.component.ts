@@ -6,7 +6,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { filter, switchMap } from 'rxjs';
+import { filter, from, of, switchMap } from 'rxjs';
 import { GameState } from '../../../model/game/game-state';
 import { LevelEndComponent } from '../level-end/level-end.component';
 import { LevelStartComponent } from '../level-start/level-start.component';
@@ -60,4 +60,6 @@ export class GameDetailsComponent {
     this.gameState.set(GameState.IN_PROGRESS)
   }
 
+  protected readonly from = from;
+  protected readonly of = of;
 }

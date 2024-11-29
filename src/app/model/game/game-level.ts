@@ -1,8 +1,12 @@
 import { GameLevelConfig } from './game-level-config';
 
-export interface GameLevel {
-  config: GameLevelConfig;
-  numbers: number[];
+export interface Numbers {
+  Numbers: []
 }
 
-export const emptyLevel: GameLevel = {config: {} as GameLevelConfig, numbers: []}
+export interface GameLevel {
+  config: GameLevelConfig;
+  numbers: Numbers;
+}
+
+export const emptyLevel: GameLevel = {config: {} as GameLevelConfig, numbers: {Numbers: []} as Numbers}

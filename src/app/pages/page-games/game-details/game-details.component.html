@@ -6,9 +6,8 @@
   />
 </div>
 
-<p>game id {{ game().gameId }}</p>
-<p>current level id {{ game().currentLevelId }}</p>
-<p>config {{ gameLevel().config | json }}</p>
+<p>game  {{ game() | json }}</p>
+<p>game level {{ gameLevel() | json }}</p>
 <div>Current game state {{ gameState() }}</div>
 
 <div>
@@ -17,7 +16,7 @@
   </div>
   <div *ngIf="gameState() === gameStateType.IN_PROGRESS">
     <app-level-start
-      [numbers]="gameLevel().numbers"
+      [numbers]="gameLevel().numbers.Numbers"
     />
   </div>
   <div *ngIf="gameState() === gameStateType.END">
