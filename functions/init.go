@@ -15,4 +15,5 @@ func init() {
 
 	// Http
 	functions.HTTP("WaitForOpponent", httphelper.Cors(auth.Middleware(triggerhttp.WaitForOpponent)))
+	functions.HTTP("UserLevelAnswer", httphelper.Cors(auth.Middleware(triggerhttp.UserLevelAnswer)))
 }
