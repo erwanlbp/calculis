@@ -1,4 +1,6 @@
 export interface UserGame {
   gameId: string;
-  userGameId: string;
+  currentLevelId: string;
 }
+
+export const emptyUserGame: UserGame = {gameId: 'unknown', currentLevelId: '1'}

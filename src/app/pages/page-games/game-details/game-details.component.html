@@ -1,0 +1,33 @@
+Résumé des anciens levels ?
+
+<div>
+  To skip level
+  <app-level-end
+    [gameId]="game().gameId"
+    [currentLevelId]="game().currentLevelId"
+  />
+</div>
+
+<p>game id {{ game().gameId }}</p>
+<p>current level id {{ game().currentLevelId }}</p>
+<p>config {{ gameLevel().config | json }}</p>
+<div>Current game state {{ gameState() }}</div>
+
+<div>
+  <div *ngIf="gameState() === gameStateType.READY">
+    <button (click)="startLevel()">Start</button>
+  </div>
+  <div *ngIf="gameState() === gameStateType.IN_PROGRESS">
+    <!--    <app-level-start-->
+    <!--      [numbers]="gameLevel().numbers"-->
+    <!--    />-->
+  </div>
+  <div *ngIf="gameState() === gameStateType.END">
+    <app-level-end
+      [gameId]="game().gameId"
+      [currentLevelId]="game().currentLevelId"
+    />
+  </div>
+
+</div>
+
