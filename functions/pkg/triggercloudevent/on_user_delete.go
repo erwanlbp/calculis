@@ -12,6 +12,7 @@ import (
 	"google.golang.org/protobuf/proto"
 
 	firebase "github.com/erwanlbp/calculis/pkg/firestore"
+	"github.com/erwanlbp/calculis/pkg/log"
 )
 
 func OnUserDeleteEntryPoint(ctx context.Context, protoEvent event.Event) error {
@@ -40,7 +41,7 @@ func OnUserDelete(ctx context.Context, userID string) error {
 }
 
 func DeleteUserScores(ctx context.Context, userID string) error {
-	slog.Info("Deleting user scores ...", slog.String("userID", userID))
+	slog.Info("Deleting user scores ...", log.UserID(userID))
 
 	scoresRef := firebase.Client.Collection(fmt.Sprintf("users/%s/scores", userID))
 
@@ -53,14 +54,14 @@ func DeleteUserScores(ctx context.Context, userID string) error {
 		if _, err := ref.Delete(ctx); err != nil {
 			return fmt.Errorf("failed to delete user score %s: %w", ref.ID, err)
 		}
-		slog.Info("Deleted user score", slog.String("userID", userID), slog.String("score", ref.ID))
+		slog.Info("Deleted user score", log.UserID(userID), slog.String("score", ref.ID))
 	}
 
 	return nil
 }
 
 func DeleteUserGames(ctx context.Context, userID string) error {
-	slog.Info("Deleting user games ...", slog.String("userID", userID))
+	slog.Info("Deleting user games ...", log.UserID(userID))
 
 	gamesRef := firebase.Client.Collection(fmt.Sprintf("users/%s/usergames", userID))
 
@@ -73,7 +74,7 @@ func DeleteUserGames(ctx context.Context, userID string) error {
 		if _, err := ref.Delete(ctx); err != nil {
 			return fmt.Errorf("failed to delete user game %s: %w", ref.ID, err)
 		}
-		slog.Info("Deleted user game", slog.String("userID", userID), slog.String("gameId", ref.ID))
+		slog.Info("Deleted user game", log.UserID(userID), log.GameID(ref.ID))
 	}
 
 	return nil

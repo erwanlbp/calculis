@@ -1,4 +1,4 @@
-package level_test
+package game_test
 
 import (
 	"fmt"
@@ -7,7 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/erwanlbp/calculis/pkg/level"
+	"github.com/erwanlbp/calculis/pkg/game"
 )
 
 // To test the actual func that is used, with a lot of tries
@@ -39,7 +39,7 @@ func TestGenerateNumber(t *testing.T) {
 			// Let's say if we try 1000 times and it work it's ok ?
 			var tries = 1_000_000
 			for range tries {
-				out := level.GenerateNumber(c.rangeInput)
+				out := game.GenerateNumber(c.rangeInput)
 				generatedAtLeastOneOf[out] = true
 				if out < minReached {
 					minReached = out
