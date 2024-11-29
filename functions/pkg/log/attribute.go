@@ -22,4 +22,5 @@ func Status(val model.Status) slog.Attr { return slog.String("status", string(va
 func EndLevelStatus(val model.LevelStatusAfterFinish) slog.Attr {
 	return slog.String("end_level_status", string(val))
 }
+func Len(val int) slog.Attr       { return slog.Int("len", val) }
 func Caller(val string) slog.Attr { return slog.String("caller", val) }

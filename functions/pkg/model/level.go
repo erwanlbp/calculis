@@ -18,7 +18,7 @@ type UserAnswer struct {
 }
 
 type GameLevel struct {
-	LevelNumber  int          `firestore:"status,omitempty"`
+	LevelNumber  int          `firestore:"levelNumber,omitempty"`
 	PlayersCount int          `firestore:"playersCount,omitempty"`
 	Status       Status       `firestore:"status,omitempty"`
 	Config       LevelConfig  `firestore:"config,omitempty"`

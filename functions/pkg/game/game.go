@@ -63,10 +63,11 @@ func TryCreatingGame(ctx context.Context, logger *slog.Logger, userId, userGameI
 		logger.Info("Created game")
 
 		// Create first level
-		levelID, err := GenerateLevel(ctx, tx, GenerateLevelDto{
-			LevelNumber: 1,
-			GameId:      gameDoc.ID,
-			Config:      DefaultConfig, // TODO Change that to have different kind of games
+		levelID, err := GenerateLevel(ctx, logger, tx, GenerateLevelDto{
+			LevelNumber:  1,
+			GameId:       gameDoc.ID,
+			Config:       DefaultConfig, // TODO Change that to have different kind of games
+			PlayersCount: len(players),
 		})
 		if err != nil {
 			return fmt.Errorf("failed to create game first level: %w", err)

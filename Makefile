@@ -10,12 +10,18 @@ start: # Local start the app
 deploy-hosting: # Deploy front app to firebase hosting
 	npm run build && nvm use lts/iron && ./deploy_web.sh ${msg}
 
+test-functions: # Run Go tests
+	go -C ./functions test ./...
+
+build-functions: # Build the local cmd to test everything compile
+	go -C ./functions build -o /dev/null cmd/main.go
+
 deploy-all-functions: # Deploy Go backend functions
 	make deploy-function-OnUserDelete 
 	make deploy-function-WaitForOpponent
 	make deploy-function-UserLevelAnswer
 
-deploy-function-OnUserDelete: # Deploy Go backend function
+deploy-function-OnUserDelete: build-functions test-functions # Deploy Go backend function
 	gcloud functions deploy OnUserDelete --region europe-west1 --runtime go123 --gen2 --project calculis \
 --source=functions \
 --trigger-event-filters=type=google.cloud.firestore.document.v1.deleted \
@@ -23,13 +29,13 @@ deploy-function-OnUserDelete: # Deploy Go backend function
 --trigger-location=eur3 \
 --trigger-event-filters-path-pattern=document='users/{userID}'
 
-deploy-function-WaitForOpponent: # Deploy Go backend function
+deploy-function-WaitForOpponent: build-functions test-functions # Deploy Go backend function
 	gcloud functions deploy WaitForOpponent --region europe-west1 --runtime go123 --gen2 --project calculis \
 --source=functions \
 --trigger-http \
 --allow-unauthenticated
 
-deploy-function-UserLevelAnswer: # Deploy Go backend function
+deploy-function-UserLevelAnswer: build-functions test-functions # Deploy Go backend function
 	gcloud functions deploy UserLevelAnswer --region europe-west1 --runtime go123 --gen2 --project calculis \
 --source=functions \
 --trigger-http \

@@ -13,7 +13,6 @@ import (
 	"google.golang.org/grpc/status"
 
 	"github.com/erwanlbp/calculis/pkg/auth"
-	"github.com/erwanlbp/calculis/pkg/debug"
 	"github.com/erwanlbp/calculis/pkg/firestore"
 	"github.com/erwanlbp/calculis/pkg/game"
 	"github.com/erwanlbp/calculis/pkg/httphelper"
@@ -33,8 +32,6 @@ func UserLevelAnswer(rw http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	debug.DumpHTTPRequest(req)
-
 	var data struct {
 		Data struct {
 			GameID  string `json:"game_id"`
@@ -47,7 +44,6 @@ func UserLevelAnswer(rw http.ResponseWriter, req *http.Request) {
 		httphelper.WriteError(rw, http.StatusBadRequest, fmt.Errorf("failed to decode body: %w", err))
 		return
 	}
-	debug.JSON(data)
 	body := data.Data
 	if body.GameID == "" {
 		httphelper.WriteError(rw, http.StatusBadRequest, errors.New("missing gameId"))
@@ -79,6 +75,7 @@ func UserLevelAnswer(rw http.ResponseWriter, req *http.Request) {
 		return
 	}
 	if err != nil {
+		logger.Error("cannot find game level", log.Err(err))
 		httphelper.WriteError(rw, http.StatusInternalServerError, fmt.Errorf("cannot find game: %w", err))
 		return
 	}
@@ -93,12 +90,16 @@ func UserLevelAnswer(rw http.ResponseWriter, req *http.Request) {
 			return fmt.Errorf("failed to update level: %w", err)
 		}
 
+		logger.Info("Updated level with user answer", slog.Any("usersAnswer", level.UsersAnswer))
+
 		// Update usergame status
 		userGameRef := firestore.Client.Doc(fmt.Sprintf("users/%s/usergames/%s", userId, body.GameID))
 		if err := tx.Update(userGameRef, []firestorego.Update{{Path: "status", Value: model.StatusWaiting}}); err != nil {
 			logger.Error("failed to update usergame doc", log.Err(err))
 			return fmt.Errorf("failed to update usergame doc: %w", err)
 		}
+
+		logger.Info("Updated user game status", log.Status(model.StatusWaiting))
 
 		return nil
 	}); err != nil {
@@ -108,7 +109,10 @@ func UserLevelAnswer(rw http.ResponseWriter, req *http.Request) {
 	}
 
 	if len(level.UsersAnswer) >= level.PlayersCount {
+		logger.Info("Finishing level ...")
 		game.FinishLevel(ctx, logger, body.GameID, body.LevelID)
+	} else {
+		logger.Info("Level is not finished", slog.Int("answersCount", len(level.UsersAnswer)), slog.Int("playersCount", level.PlayersCount))
 	}
 
 	httphelper.WriteJSON(rw, http.StatusOK, map[string]interface{}{
