@@ -14,7 +14,7 @@ export class GameUserAnswerComponent implements OnInit {
     @Input() answer: number;
     @Output() answered: EventEmitter<boolean> = new EventEmitter();
 
-    @ViewChild('answerInput', {static: false}) answerInput: IonInput;
+    @ViewChild('answerInput') answerInput: IonInput;
 
     constructor() {
     }

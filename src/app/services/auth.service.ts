@@ -1,11 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { AngularFireAuth } from '@angular/fire/auth';
+import { Auth, authState, GoogleAuthProvider, signInWithCredential, signInWithPopup, user, UserCredential } from '@angular/fire/auth';
 import { map, take } from 'rxjs/operators';
 import { Platform } from '@ionic/angular';
 import { GooglePlus } from '@ionic-native/google-plus/ngx';
 import { firebaseWebClientId } from 'src/environments/firebase.config';
-import * as firebase from 'firebase/app';
 
 @Injectable({
     providedIn: 'root'
@@ -13,27 +12,27 @@ import * as firebase from 'firebase/app';
 export class AuthService {
 
     constructor(
-        private fireAuth: AngularFireAuth,
+        private fireAuth: Auth,
         private platform: Platform,
         private google: GooglePlus,
     ) {
     }
 
     isConnected$(): Observable<boolean> {
-        return this.fireAuth.user.pipe(map(user => !!user));
+        return user(this.fireAuth).pipe(map(user => !!user));
     }
 
     getAuthToken$(): Promise<string> {
-        return this.fireAuth.authState.pipe(take(1)).toPromise()
+        return authState(this.fireAuth).pipe(take(1)).toPromise()
             .then(user => user ? user.getIdToken() : null);
     }
 
     getUserId$(): Observable<string> {
-        return this.fireAuth.authState.pipe(map(user => user ? user.uid : null));
+        return authState(this.fireAuth).pipe(map(user => user ? user.uid : null));
     }
 
     getUserEmail$() {
-        return this.fireAuth.user.pipe(map(user => user ? user.email : null));
+        return user(this.fireAuth).pipe(map(user => user ? user.email : null));
     }
 
     login() {
@@ -44,7 +43,7 @@ export class AuthService {
         }
     }
 
-    mobileLogin(): Promise<firebase.auth.UserCredential> {
+    mobileLogin(): Promise<UserCredential> {
         let params;
         if (this.platform.is('android')) {
             params = { webClientId: firebaseWebClientId, offline: true };
@@ -58,18 +57,18 @@ export class AuthService {
             });
     }
 
-    webLogin(): Promise<firebase.auth.UserCredential> {
-        return this.fireAuth.auth.signInWithPopup(new firebase.auth.GoogleAuthProvider());
+    webLogin(): Promise<UserCredential> {
+        return signInWithPopup(this.fireAuth, new GoogleAuthProvider());
     }
 
-    onLoginSuccess(accessToken, accessSecret): Promise<firebase.auth.UserCredential> {
+    onLoginSuccess(accessToken, accessSecret): Promise<UserCredential> {
         const credential = accessSecret ?
-            firebase.auth.GoogleAuthProvider.credential(accessToken, accessSecret)
-            : firebase.auth.GoogleAuthProvider.credential(accessToken);
-        return this.fireAuth.auth.signInWithCredential(credential);
+            GoogleAuthProvider.credential(accessToken, accessSecret)
+            : GoogleAuthProvider.credential(accessToken);
+        return signInWithCredential(this.fireAuth, credential);
     }
 
     logout(): Promise<void> {
-        return this.fireAuth.auth.signOut();
+        return this.fireAuth.signOut();
     }
 }
