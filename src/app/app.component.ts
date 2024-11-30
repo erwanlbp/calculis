@@ -10,6 +10,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MessagePayload, Messaging, onMessage } from '@angular/fire/messaging';
 import { MessagingService } from './services/messaging.service';
+import { UtilsService } from './services/utils.service';
 
 
 @Component({
@@ -35,6 +36,7 @@ export class AppComponent {
   title = 'calculis';
 
   messagingComponent = inject(MessagingService)
+  utilsService = inject(UtilsService)
 
   menuItems = [
     { link: '/home', icon: 'home', label: 'Home', },
@@ -45,8 +47,13 @@ export class AppComponent {
   connected: Signal<boolean>;
   messaging = inject(Messaging)
 
-  messageHandler(msg: MessagePayload): void {
-    console.log("My Firebase Cloud Message", msg);
+  messageHandler(message: MessagePayload): void {
+    console.log("My Firebase Cloud Message", message);
+    if (message && message.data && message.data['type'] == 'game_created') {
+      this.utilsService.showToast(`La game ${message.data['gameId']} est prete à jouer !`)
+    } else {
+      console.log('received notif', message)
+    }
   }
 
   constructor() {
