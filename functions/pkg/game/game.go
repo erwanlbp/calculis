@@ -11,6 +11,7 @@ import (
 	"github.com/erwanlbp/calculis/pkg/firestore"
 	"github.com/erwanlbp/calculis/pkg/log"
 	"github.com/erwanlbp/calculis/pkg/model"
+	"github.com/erwanlbp/calculis/pkg/notification"
 )
 
 func TryCreatingGame(ctx context.Context, logger *slog.Logger, userId, userGameId string) {
@@ -53,12 +54,14 @@ func TryCreatingGame(ctx context.Context, logger *slog.Logger, userId, userGameI
 		{UserId: foundPlayerDoc.UserID, UserGameId: foundPlayerDocsnapshot.Ref.ID},
 	}
 
+	var gameID string
 	if err := firestore.Client.RunTransaction(ctx, func(ctx context.Context, tx *firestorego.Transaction) error {
 		gameDoc := firestore.Client.Collection("games").NewDoc()
 		if err := tx.Set(gameDoc, model.Game{GameID: gameDoc.ID, CreatedAt: time.Now().Format(time.RFC3339)}); err != nil {
 			logger.Error("failed to create game", log.Err(err))
 			return err
 		}
+		gameID = gameDoc.ID
 		logger = logger.With(log.GameID(gameDoc.ID))
 
 		logger.Info("Created game")
@@ -103,7 +106,10 @@ func TryCreatingGame(ctx context.Context, logger *slog.Logger, userId, userGameI
 		return nil
 	}); err != nil {
 		logger.Error("game creation tx failed", log.Err(err))
+		return
 	}
+
+	notification.SendGameCreatedNotification(ctx, logger, gameID, foundPlayerDoc.UserID)
 }
 
 func SetGameStatus(ctx context.Context, tx *firestorego.Transaction, gameID string, status model.Status) error {
