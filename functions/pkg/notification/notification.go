@@ -34,8 +34,8 @@ func SendGameCreatedNotification(ctx context.Context, logger *slog.Logger, gameI
 		Webpush: &messaging.WebpushConfig{
 			Data: data,
 			Notification: &messaging.WebpushNotification{
-				Title: "Calculis - Webpush",
-				Body:  "La game est créée",
+				Title: "Calculis (Webpush)",
+				Body:  fmt.Sprintf("Défi accepté !\nLa partie %s est lancée !", gameID),
 			},
 		},
 		Notification: &messaging.Notification{

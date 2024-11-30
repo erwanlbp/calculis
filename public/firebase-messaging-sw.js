@@ -5,21 +5,21 @@ const messaging = firebase.messaging();
 
 console.log('sw registration')
 
-messaging.onBackgroundMessage(function (payload) {
-  console.log('[firebase-messaging-sw.js] Received background message ', payload);
+// messaging.onBackgroundMessage(function (payload) {
+//   console.log('[firebase-messaging-sw.js] Received background message ', payload);
 
-  let notificationTitle = 'Default notif title';
-  let notificationOptions = { body: 'Default notif body' };
+//   let notificationTitle = 'Default notif title';
+//   let notificationOptions = { body: 'Default notif body' };
 
-  if (payload.data.type == 'game_created' || payload.data.type == 'next_level_ready_to_play') {
-    notificationTitle = 'Calculis';
-    notificationOptions = {
-      body: `La game ${payload.data.gameId} est prete à jouer !`,
-    };
-  } else {
-    console.log('unknown data.type, skipping')
-    return
-  }
+//   if (payload.data.type == 'game_created' || payload.data.type == 'next_level_ready_to_play') {
+//     notificationTitle = 'Calculis';
+//     notificationOptions = {
+//       body: `La game ${payload.data.gameId} est prete à jouer !`,
+//     };
+//   } else {
+//     console.log('unknown data.type, skipping')
+//     return
+//   }
 
-  self.registration.showNotification(notificationTitle, notificationOptions);
-});
+//   self.registration.showNotification(notificationTitle, notificationOptions);
+// });

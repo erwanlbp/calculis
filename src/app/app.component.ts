@@ -8,8 +8,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { Messaging, onMessage } from '@angular/fire/messaging';
-import { Observable, tap } from 'rxjs';
+import { MessagePayload, Messaging, onMessage } from '@angular/fire/messaging';
 import { MessagingService } from './services/messaging.service';
 
 
@@ -46,16 +45,15 @@ export class AppComponent {
   connected: Signal<boolean>;
   messaging = inject(Messaging)
 
+  messageHandler(msg: MessagePayload): void {
+    console.log("My Firebase Cloud Message", msg);
+  }
 
   constructor() {
     this.connected = toSignal(this.authService.isConnected$(), { initialValue: false })
 
-    new Observable((sub) => onMessage(this.messaging, (msg) =>
-      sub.next(msg))).pipe(
-        tap((msg) => {
-          console.log("My Firebase Cloud Message", msg);
-        })
-      );
+    console.log('starting onMessage')
+    onMessage(this.messaging, this.messageHandler)
   }
 
   login() {
