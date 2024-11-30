@@ -9,6 +9,7 @@ type UserGame struct {
 
 type Game struct {
 	GameID       string     `firestore:"gameId,omitempty"`
+	CreatedAt    string     `firestore:"createdAt,omitempty"`
 	Difficulty   Difficulty `firestore:"difficulty,omitempty"`
 	CurrentLevel string     `firestore:"currentLevelId,omitempty"`
 }

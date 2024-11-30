@@ -22,7 +22,7 @@ func WaitForOpponent(rw http.ResponseWriter, req *http.Request) {
 	logger := slog.Default().With(log.Caller("WaitForOpponent"))
 
 	userId, ok := auth.FromContext(ctx)
-	if !ok {
+	if !ok || userId == "" {
 		logger.Error("request is missing userId in context")
 		httphelper.WriteError(rw, http.StatusUnauthorized, errors.New("not authenticated"))
 		return

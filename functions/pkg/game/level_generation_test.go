@@ -55,7 +55,11 @@ func TestGenerateNumber(t *testing.T) {
 
 			// Test all numbers from the range are generated
 			for i := c.expectedMin; i <= c.expectedMax; i++ {
-				assert.Contains(t, generatedAtLeastOneOf, i, "number %d was never generated, maybe %d tries wasn't enough", i, tries)
+				if i == 0 {
+					assert.False(t, generatedAtLeastOneOf[i], "number %d was generated, it shouldn't be", i)
+				} else {
+					assert.True(t, generatedAtLeastOneOf[i], "number %d was never generated, maybe %d tries wasn't enough", i, tries)
+				}
 			}
 		})
 	}

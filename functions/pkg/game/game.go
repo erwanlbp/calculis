@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log/slog"
+	"time"
 
 	firestorego "cloud.google.com/go/firestore"
 
@@ -54,7 +55,7 @@ func TryCreatingGame(ctx context.Context, logger *slog.Logger, userId, userGameI
 
 	if err := firestore.Client.RunTransaction(ctx, func(ctx context.Context, tx *firestorego.Transaction) error {
 		gameDoc := firestore.Client.Collection("games").NewDoc()
-		if err := tx.Set(gameDoc, model.Game{GameID: gameDoc.ID}); err != nil {
+		if err := tx.Set(gameDoc, model.Game{GameID: gameDoc.ID, CreatedAt: time.Now().Format(time.RFC3339)}); err != nil {
 			logger.Error("failed to create game", log.Err(err))
 			return err
 		}

@@ -3,18 +3,18 @@ package model
 import "time"
 
 type LevelConfig struct {
-	Range           int           `json:"range"`
-	SerieSize       int           `json:"serieSize"`
-	PrintedDuration time.Duration `json:"printedDuration"`
+	Range           int           `firestore:"range"`
+	SerieSize       int           `firestore:"serieSize"`
+	PrintedDuration time.Duration `firestore:"printedDuration"`
 }
 
 // Wrap numbers in a struct, so later we can make it evolve, like adding cards link, image, whatever etc
 type LevelNumbers struct {
-	Numbers []int `json:"numbers"`
+	Numbers []int `firestore:"numbers,omitempty"`
 }
 
 type UserAnswer struct {
-	Correct bool `json:"correct,omitempty"`
+	Correct bool `firestore:"correct,omitempty"`
 }
 
 type GameLevel struct {

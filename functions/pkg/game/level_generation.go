@@ -58,7 +58,11 @@ func GenerateLevelNumbers(level int, config model.LevelConfig) (res model.LevelN
 var Rander func(int) int = rand.IntN
 
 func GenerateNumber(configRange int) int {
-	return GenerateNumberWithRand(configRange, Rander)
+	n := GenerateNumberWithRand(configRange, Rander)
+	for n == 0 {
+		n = GenerateNumberWithRand(configRange, Rander)
+	}
+	return n
 }
 
 func GenerateNumberWithRand(configRange int, rander func(int) int) int {
