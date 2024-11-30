@@ -23,11 +23,24 @@ func SendGameCreatedNotification(ctx context.Context, logger *slog.Logger, gameI
 		return
 	}
 
+	data := map[string]string{
+		"type":   "game_created",
+		"gameId": gameID,
+	}
+
 	res, err := firebase.MessagingClient.Send(ctx, &messaging.Message{
 		Token: token,
-		Data: map[string]string{
-			"type":   "game_created",
-			"gameId": gameID,
+		Data:  data,
+		Webpush: &messaging.WebpushConfig{
+			Data: data,
+			Notification: &messaging.WebpushNotification{
+				Title: "Calculis - Webpush",
+				Body:  "La game est créée",
+			},
+		},
+		Notification: &messaging.Notification{
+			Title: "Calculis - Notification",
+			Body:  "La game est créée",
 		},
 	})
 	if err != nil {
