@@ -1,7 +1,8 @@
 import { inject, Injectable, Signal, signal } from '@angular/core';
 import { GoogleAuthProvider } from "firebase/auth";
 import { Auth, authState, signInWithPopup, user } from '@angular/fire/auth';
-import { firstValueFrom, from, map, Observable } from 'rxjs';
+import { firstValueFrom, from, map, Observable, switchMap } from 'rxjs';
+import { doc, Firestore, setDoc, updateDoc } from '@angular/fire/firestore';
 
 @Injectable({
   providedIn: 'root'
@@ -9,6 +10,14 @@ import { firstValueFrom, from, map, Observable } from 'rxjs';
 export class AuthService {
 
   private auth = inject(Auth);
+  private firestore = inject(Firestore);
+
+  public storeFCMToken(token: string): Promise<void> {
+    return firstValueFrom(this.getUserId$().pipe(
+      switchMap(userId => updateDoc(doc(this.firestore, `users/${userId}`), { fcmToken: token })
+        .catch(err => setDoc(doc(this.firestore, `users/${userId}`), { fcmToken: token }))),
+    ))
+  }
 
   public getAuthToken(): Promise<string> {
     return firstValueFrom(authState(this.auth))

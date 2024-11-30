@@ -4,10 +4,10 @@ help:
 decrypt: # Decrypt config files
 	sops -d src/environments/firebase.config.ts.encrypted > src/environments/firebase.config.ts
 
-start: # Local start the app
+start: decrypt # Local start the app
 	npm run start
 
-build-web: # Build web app in prod mode
+build-web: decrypt # Build web app in prod mode
 	npm run build
 
 deploy-web-preprod: build-web # Build and deploy preprod
