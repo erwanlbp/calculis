@@ -47,20 +47,18 @@ export class AppComponent {
   connected: Signal<boolean>;
   messaging = inject(Messaging)
 
-  messageHandler(message: MessagePayload): void {
-    console.log("My Firebase Cloud Message", message);
-    if (message && message.data && message.data['type'] == 'game_created') {
-      this.utilsService.showToast(`La game ${message.data['gameId']} est prete à jouer !`)
-    } else {
-      console.log('received notif', message)
-    }
-  }
-
   constructor() {
     this.connected = toSignal(this.authService.isConnected$(), { initialValue: false })
 
     console.log('starting onMessage')
-    onMessage(this.messaging, this.messageHandler)
+    onMessage(this.messaging, (message: MessagePayload) => {
+      console.log("My Firebase Cloud Message", message);
+      if (message && message.data && message.data['type'] == 'game_created') {
+        this.utilsService.showToast(`La game ${message.data['gameId']} est prete à jouer !`)
+      } else {
+        console.log('received notif', message)
+      }
+    })
   }
 
   login() {
