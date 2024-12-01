@@ -22,7 +22,6 @@ export class GamesService {
         if (!userId) {
           return;
         }
-        console.log(`before : users/${userId}/usergames/${gameId}`)
         return docData(doc(this.firestore, `users/${userId}/usergames/${gameId}`))
       }),
       tap(r => console.log('after r ' + r.gameId))

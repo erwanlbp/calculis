@@ -6,7 +6,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { filter, from, of, switchMap } from 'rxjs';
+import { filter, switchMap } from 'rxjs';
 import { GameState } from '../../../model/game/game-state';
 import { LevelEndComponent } from '../level-end/level-end.component';
 import { LevelStartComponent } from '../level-start/level-start.component';
@@ -35,7 +35,7 @@ export class GameDetailsComponent {
   gameStateType = GameState
   gameState: WritableSignal<GameState>
   game: Signal<UserGame>
-  gameLevel: Signal<GameLevel>
+  currentLevel: Signal<GameLevel>
 
   constructor() {
     this.game = toSignal(
@@ -44,22 +44,19 @@ export class GameDetailsComponent {
       ), {initialValue: emptyUserGame}
     )
 
-    this.gameLevel = toSignal(
+    this.currentLevel = toSignal(
       toObservable(this.game).pipe(
         filter(t => t.gameId !== 'unknown'),
         switchMap(userGame => {
           return this.gameService.getGameLevel$(userGame.gameId, userGame.currentLevelId)
-        })
+        }),
       ), {initialValue: emptyLevel}
     )
 
     this.gameState = signal(GameState.READY);
   }
 
-  startLevel() {
-    this.gameState.set(GameState.IN_PROGRESS)
+  updateGameState(gameState: GameState) {
+    this.gameState.set(gameState)
   }
-
-  protected readonly from = from;
-  protected readonly of = of;
 }
