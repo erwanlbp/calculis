@@ -1,33 +1,33 @@
+<mat-toolbar>
+  <a mat-icon-button href="/games"><mat-icon>arrow_back</mat-icon></a>
+  <span>
+    Partie {{ this.game().gameId }} - Niveau {{ this.game().currentLevelId }} ({{ this.game().status }})
+  </span>
+</mat-toolbar>
+
 <div class="game-detail-container">
 
-  <div>
-    <div>
-      Level : {{ this.game().currentLevelId }}
-    </div>
-
+  <div *ngIf="this.game().status == userGameStateType.PLAYING">
     <div *ngIf="gameState() === gameStateType.READY">
-      <button (click)="updateGameState(gameStateType.IN_PROGRESS)">Start</button>
+      <button mat-stroked-button (click)="updateGameState(gameStateType.IN_PROGRESS)">Start</button>
     </div>
     <div *ngIf="gameState() === gameStateType.IN_PROGRESS">
-      <app-level-start
-        [numbers]="currentLevel().numbers.numbers"
-        (endDisplay)="updateGameState(gameStateType.END)"
-      />
+      <app-level-start [numbers]="currentLevel().numbers.numbers" (endDisplay)="updateGameState(gameStateType.END)" />
     </div>
     <div *ngIf="gameState() === gameStateType.END">
-      <app-level-end
-        [gameId]="game().gameId"
-        [currentLevelId]="game().currentLevelId"
-      />
+      <app-level-end [gameId]="game().gameId" [currentLevelId]="game().currentLevelId" />
     </div>
+  </div>
+
+  <div *ngIf="this.game().status == userGameStateType.WAITING">
+    <p>En attente du résultat de votre adversaire, vous serez notifié de la suite !</p>
   </div>
 
   <div>
     DEBUG
-    <p>game  {{ game() | json }}</p>
+    <p>game {{ game() | json }}</p>
     <p>game level {{ currentLevel() | json }}</p>
     <p>Current game state {{ gameState() }}</p>
   </div>
 
 </div>
-

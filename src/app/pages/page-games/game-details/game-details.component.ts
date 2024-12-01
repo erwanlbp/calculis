@@ -7,11 +7,13 @@ import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { filter, switchMap } from 'rxjs';
-import { GameState } from '../../../model/game/game-state';
+import { GameState, UserGameState } from '../../../model/game/game-state';
 import { LevelEndComponent } from '../level-end/level-end.component';
 import { LevelStartComponent } from '../level-start/level-start.component';
 import { emptyLevel, GameLevel } from '../../../model/game/game-level';
 import { emptyUserGame, UserGame } from '../../../model/game/user-game';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-game-start',
@@ -20,7 +22,9 @@ import { emptyUserGame, UserGame } from '../../../model/game/user-game';
     CommonModule,
     MatFormFieldModule,
     MatInputModule,
+    MatToolbarModule,
     MatButtonModule,
+    MatIconModule,
     LevelEndComponent,
     LevelStartComponent
   ],
@@ -33,6 +37,7 @@ export class GameDetailsComponent {
   gameService = inject(GamesService);
 
   gameStateType = GameState
+  userGameStateType = UserGameState
   gameState: WritableSignal<GameState>
   game: Signal<UserGame>
   currentLevel: Signal<GameLevel>

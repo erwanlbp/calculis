@@ -3,3 +3,11 @@ export enum GameState {
   IN_PROGRESS,
   END
 }
+
+export enum UserGameState {
+  PLAYING = 'playing',
+  WAITING = 'waiting',
+  WON = 'won',
+  TIE = 'tie',
+  LOST = 'LOST',
+}

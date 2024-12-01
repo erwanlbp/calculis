@@ -1,16 +1,16 @@
 import { Component, inject, Input } from '@angular/core';
-import { MatButton } from '@angular/material/button';
-import { MatFormField, MatLabel } from '@angular/material/form-field';
-import { MatInput } from '@angular/material/input';
+import { MatButton, MatButtonModule } from '@angular/material/button';
+import { MatFormField, MatFormFieldModule, MatLabel } from '@angular/material/form-field';
+import { MatInput, MatInputModule } from '@angular/material/input';
 import { GamesService } from '../../../services/games.service';
 
 @Component({
   selector: 'app-level-end',
   standalone: true,
   imports: [
-    MatButton,
-    MatFormField,
-    MatInput,
+    MatButtonModule,
+    MatFormFieldModule,
+    MatInputModule,
     MatLabel
   ],
   templateUrl: './level-end.component.html',
