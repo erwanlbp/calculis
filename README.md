@@ -61,6 +61,12 @@ ionic cordova run android --livereload --debug --device --consolelogs
 make deploy-web-preprod
 ```
 
+## ⚠️ Deploy prod web app
+
+```bash
+make deploy-web-prod
+```
+
 ----
 ----
 ----

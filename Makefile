@@ -10,6 +10,12 @@ start: decrypt # Local start the app
 build-web: decrypt # Build web app in prod mode
 	npm run build
 
+deploy-web-prod: build-web # Build and deploy prod
+ifndef ${message}
+	$(error --message <version> is required)
+endif
+	firebase deploy --message ${message}
+
 deploy-web-preprod: build-web # Build and deploy preprod
 	firebase hosting:channel:deploy preprod
 
