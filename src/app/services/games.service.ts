@@ -70,14 +70,15 @@ export class GamesService {
       .then((res) => res.data.game_id)
   }
 
-  answerLevel(game_id: string, level_id: string, answer: number): Promise<boolean> {
+  answerLevel(game_id: string, level_id: string, answer: number, forfeit: boolean): Promise<boolean> {
     interface Body {
-      game_id: string
-      level_id: string
-      answer: number
+      game_id: string;
+      level_id: string;
+      answer: number;
+      forfeit: boolean;
     }
 
-    return httpsCallable<Body, { correct: boolean, correct_answer: number }>(this.cloudFunctions, 'UserLevelAnswer')({ game_id, level_id, answer })
+    return httpsCallable<Body, { correct: boolean, correct_answer: number }>(this.cloudFunctions, 'UserLevelAnswer')({ game_id, level_id, answer, forfeit })
       .then((res) => res.data?.correct)
   }
 }

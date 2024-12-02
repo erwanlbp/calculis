@@ -3,4 +3,5 @@
   <input matInput placeholder="-3 or 3" #answerInput>
 </mat-form-field>
 
-<button mat-button (click)="answer(answerInput.value)">Envoyer</button>
+<button mat-button (click)="answer(answerInput.value, false)">Envoyer</button>
+<button mat-button (click)="answer(answerInput.value, true)">Forfait</button>

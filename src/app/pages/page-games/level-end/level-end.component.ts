@@ -25,12 +25,12 @@ export class LevelEndComponent {
   gameService = inject(GamesService)
   utilsService = inject(UtilsService)
 
-  answer(val: string) {
+  answer(val: string, forfeit: boolean) {
     if (!this.gameId || this.currentLevelId === undefined) {
       this.utilsService.showToast(`Echec d'envoi, réessayez bientot`)
       return
     }
-    this.gameService.answerLevel(this.gameId, this.currentLevelId, Number(val))
+    this.gameService.answerLevel(this.gameId, this.currentLevelId, Number(val), forfeit)
       .then(x => console.log('answer response', x))
   }
 }

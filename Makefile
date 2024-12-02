@@ -1,3 +1,5 @@
+message=
+
 help:
 	@echo 'helm to be automatically created ...'
 
@@ -11,7 +13,7 @@ build-web: decrypt # Build web app in prod mode
 	npm run build
 
 deploy-web-prod: build-web # Build and deploy prod
-ifndef ${message}
+ifndef message
 	$(error --message <version> is required)
 endif
 	firebase deploy --message ${message}
