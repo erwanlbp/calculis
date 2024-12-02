@@ -29,6 +29,7 @@ deploy-all-functions: # Deploy Go backend functions
 	make deploy-function-OnUserDelete 
 	make deploy-function-WaitForOpponent
 	make deploy-function-UserLevelAnswer
+	make deploy-function-GetLevelContent
 
 deploy-function-OnUserDelete: build-functions test-functions # Deploy Go backend function
 	gcloud functions deploy OnUserDelete --region europe-west1 --runtime go123 --gen2 --project calculis \
@@ -46,6 +47,12 @@ deploy-function-WaitForOpponent: build-functions test-functions # Deploy Go back
 
 deploy-function-UserLevelAnswer: build-functions test-functions # Deploy Go backend function
 	gcloud functions deploy UserLevelAnswer --region europe-west1 --runtime go123 --gen2 --project calculis \
+--source=functions \
+--trigger-http \
+--allow-unauthenticated
+
+deploy-function-GetLevelContent: build-functions test-functions # Deploy Go backend function
+	gcloud functions deploy GetLevelContent --region europe-west1 --runtime go123 --gen2 --project calculis \
 --source=functions \
 --trigger-http \
 --allow-unauthenticated
