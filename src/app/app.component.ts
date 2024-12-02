@@ -11,6 +11,10 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MessagePayload, Messaging, onMessage } from '@angular/fire/messaging';
 import { MessagingService } from './services/messaging.service';
 import { UtilsService } from './services/utils.service';
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import { map } from 'rxjs';
+import { MobileMenuComponent } from './components/menu/mobile-menu/mobile-menu.component';
+import { MENU_ITEMS } from './components/menu/menu';
 
 
 @Component({
@@ -25,6 +29,7 @@ import { UtilsService } from './services/utils.service';
     MatButtonModule,
     MatIconModule,
     MatToolbarModule,
+    MobileMenuComponent,
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
@@ -32,23 +37,26 @@ import { UtilsService } from './services/utils.service';
 })
 export class AppComponent {
   authService: AuthService = inject(AuthService);
+  breakpointObserver: BreakpointObserver = inject(BreakpointObserver);
 
   title = 'calculis';
 
   messagingComponent = inject(MessagingService)
   utilsService = inject(UtilsService)
 
-  menuItems = [
-    { link: '/home', icon: 'home', label: 'Home', },
-    { link: '/games', icon: '123', label: 'Games', },
-    { link: '/account', icon: 'person', label: 'Account', },
-  ]
-
   connected: Signal<boolean>;
   messaging = inject(Messaging)
+  isMobile: Signal<boolean>
+  menuItems = MENU_ITEMS;
 
   constructor() {
-    this.connected = toSignal(this.authService.isConnected$(), { initialValue: false })
+    this.connected = toSignal(this.authService.isConnected$(), {initialValue: false})
+    this.isMobile = toSignal(this.breakpointObserver.observe([Breakpoints.XSmall])
+      .pipe(
+        map(state => {
+          return state.matches;
+        })
+      ), {initialValue: true})
 
     console.log('starting onMessage')
     onMessage(this.messaging, (message: MessagePayload) => {
@@ -70,4 +78,5 @@ export class AppComponent {
   logout() {
     this.authService.logout();
   }
+
 }

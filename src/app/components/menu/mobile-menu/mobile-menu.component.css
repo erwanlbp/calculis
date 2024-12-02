@@ -1,0 +1,10 @@
+.mobile-menu-container {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+}
+
+.mobile-menu-items {
+  display: flex;
+  align-items: center;
+}
