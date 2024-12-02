@@ -17,9 +17,10 @@ type LevelNumbers struct {
 }
 
 type GetLevelContentResponse struct {
-	Status  model.Status `json:"status,omitempty"`
-	Config  LevelConfig  `json:"config,omitempty"`
-	Numbers LevelNumbers `json:"numbers,omitempty"`
+	Status            model.Status    `json:"status,omitempty"`
+	Config            LevelConfig     `json:"config,omitempty"`
+	Numbers           LevelNumbers    `json:"numbers,omitempty"`
+	UsersFetchedLevel map[string]bool `json:"usersAnswered,omitempty"`
 }
 
 func MapGetLevelContentResponse(level model.GameLevel) GetLevelContentResponse {
@@ -33,5 +34,6 @@ func MapGetLevelContentResponse(level model.GameLevel) GetLevelContentResponse {
 		Numbers: LevelNumbers{
 			Numbers: level.Numbers.Numbers,
 		},
+		UsersFetchedLevel: level.UsersFetchedLevel,
 	}
 }

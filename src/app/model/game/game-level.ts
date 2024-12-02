@@ -5,8 +5,9 @@ export interface Numbers {
 }
 
 export interface GameLevel {
+  status: string;
   config: GameLevelConfig;
   numbers: Numbers;
 }
 
-export const emptyLevel: GameLevel = {config: {} as GameLevelConfig, numbers: {numbers: []} as Numbers}
+export const emptyLevel: GameLevel = {config: {} as GameLevelConfig, numbers: {numbers: []} as Numbers, status: 'unknown'}

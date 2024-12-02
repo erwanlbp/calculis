@@ -32,6 +32,7 @@ func UserLevelAnswer(rw http.ResponseWriter, req *http.Request) {
 
 	var data struct {
 		Data struct {
+			Forfeit bool   `json:"forfeit"`
 			GameID  string `json:"game_id"`
 			LevelID string `json:"level_id"`
 			Answer  int    `json:"answer"`
@@ -84,7 +85,7 @@ func UserLevelAnswer(rw http.ResponseWriter, req *http.Request) {
 	}
 
 	level.UsersAnswer[userId] = model.UserAnswer{
-		Correct: body.Answer == level.CorrectAnswer(),
+		Correct: !body.Forfeit && body.Answer == level.CorrectAnswer(),
 	}
 	// Just for security
 	level.UsersFetchedLevel[userId] = true
@@ -122,7 +123,7 @@ func UserLevelAnswer(rw http.ResponseWriter, req *http.Request) {
 	}
 
 	httphelper.WriteJSON(rw, http.StatusOK, map[string]interface{}{
-		"correct":        body.Answer == level.CorrectAnswer(),
+		"correct":        !body.Forfeit && body.Answer == level.CorrectAnswer(),
 		"correct_answer": level.CorrectAnswer(),
 	})
 }

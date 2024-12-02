@@ -7,26 +7,25 @@
 
 <div class="game-detail-container">
 
-  <div *ngIf="this.game().status == userGameStateType.PLAYING">
+  <div *ngIf="this.game()?.status == userGameStateType.PLAYING">
     <div *ngIf="gameState() === gameStateType.READY">
       <button mat-stroked-button (click)="updateGameState(gameStateType.IN_PROGRESS)">Start</button>
     </div>
     <div *ngIf="gameState() === gameStateType.IN_PROGRESS">
-      <app-level-start [numbers]="currentLevel().numbers.numbers" (endDisplay)="updateGameState(gameStateType.END)" />
+      <app-level-start [game]="game()" (endDisplay)="updateGameState(gameStateType.END)" />
     </div>
     <div *ngIf="gameState() === gameStateType.END">
       <app-level-end [gameId]="game().gameId" [currentLevelId]="game().currentLevelId" />
     </div>
   </div>
 
-  <div *ngIf="this.game().status == userGameStateType.WAITING">
+  <div *ngIf="this.game()?.status == userGameStateType.WAITING">
     <p>En attente du résultat de votre adversaire, vous serez notifié de la suite !</p>
   </div>
 
   <div>
     DEBUG
     <p>game {{ game() | json }}</p>
-    <p>game level {{ currentLevel() | json }}</p>
     <p>Current game state {{ gameState() }}</p>
   </div>
 

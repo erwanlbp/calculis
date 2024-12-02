@@ -15,7 +15,7 @@ export class GamesService {
   private firestore = inject(Firestore);
   private cloudFunctions = inject(Functions)
 
-  getCurrentGame$(gameId: string): Observable<UserGame> {
+  getUserGame$(gameId: string): Observable<UserGame> {
     // check if user is log ?
     return this.authService.getUserId$().pipe(
       switchMap(userId => {
@@ -24,12 +24,20 @@ export class GamesService {
         }
         return docData(doc(this.firestore, `users/${userId}/usergames/${gameId}`))
       }),
-      tap(r => console.log('after r ' + r.gameId))
     );
   }
 
-  getGameLevel$(gameId: string, levelId: string): Observable<GameLevel> {
-    return docData(doc(this.firestore, `games/${gameId}/gamelevels/${levelId}`))
+  getLevelContent(game_id: string, level_id: string): Promise<GameLevel> {
+    interface Body {
+      game_id: string
+      level_id: string
+    }
+
+    return httpsCallable<Body, GameLevel>(this.cloudFunctions, 'GetLevelContent')({ game_id, level_id })
+      .then((res) => {
+        console.log('level', res);
+        return res.data
+      })
   }
 
   getGamesSearching$(): Observable<number> {
@@ -58,8 +66,8 @@ export class GamesService {
   }
 
   waitForOpponent(): Promise<string> {
-    return httpsCallable<{}, { data: { game_id: string } }>(this.cloudFunctions, 'WaitForOpponent')()
-      .then((res) => res.data.data?.game_id)
+    return httpsCallable<{}, { game_id: string }>(this.cloudFunctions, 'WaitForOpponent')()
+      .then((res) => res.data.game_id)
   }
 
   answerLevel(game_id: string, level_id: string, answer: number): Promise<boolean> {
@@ -69,7 +77,7 @@ export class GamesService {
       answer: number
     }
 
-    return httpsCallable<Body, { data: { correct: boolean, correct_answer: number } }>(this.cloudFunctions, 'UserLevelAnswer')({game_id, level_id, answer})
-      .then((res) => res.data.data?.correct)
+    return httpsCallable<Body, { correct: boolean, correct_answer: number }>(this.cloudFunctions, 'UserLevelAnswer')({ game_id, level_id, answer })
+      .then((res) => res.data?.correct)
   }
 }

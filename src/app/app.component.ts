@@ -58,7 +58,6 @@ export class AppComponent {
         })
       ), {initialValue: true})
 
-    console.log('starting onMessage')
     onMessage(this.messaging, (message: MessagePayload) => {
       console.log("My Firebase Cloud Message", message);
       if (message && message.data && message.data['type'] == 'game_created') {
