@@ -11,6 +11,7 @@ import (
 	"github.com/erwanlbp/calculis/pkg/firestore"
 	"github.com/erwanlbp/calculis/pkg/log"
 	"github.com/erwanlbp/calculis/pkg/model"
+	"github.com/erwanlbp/calculis/pkg/notification"
 )
 
 type GenerateLevelDto struct {
@@ -44,7 +45,7 @@ func GenerateLevel(ctx context.Context, logger *slog.Logger, tx *firestorego.Tra
 	return levelRef.ID, nil
 }
 
-func FinishLevel(ctx context.Context, logger *slog.Logger, gameID, levelID string) {
+func FinishLevel(ctx context.Context, logger *slog.Logger, gameID, levelID string, lastUserID string) {
 	// Logger contains gameID and levelID already
 	logger = logger.With(log.Caller("FinishLevel"))
 
@@ -63,15 +64,14 @@ func FinishLevel(ctx context.Context, logger *slog.Logger, gameID, levelID strin
 	}
 	level.Status = model.StatusPlayed
 
+	status, correctUsers := level.StatusAfterFinish()
+	logger = logger.With(log.EndLevelStatus(status))
+
 	if err := firestore.Client.RunTransaction(ctx, func(ctx context.Context, tx *firestorego.Transaction) error {
 		if err := tx.Set(levelRef, level); err != nil {
 			return fmt.Errorf("failed to update level doc: %w", err)
 		}
 		logger.Info("Updated game level", log.Status(level.Status))
-
-		status, correctUsers := level.StatusAfterFinish()
-
-		logger = logger.With(log.EndLevelStatus(status))
 
 		var nextLevelID string
 		if status == model.LevelStatusAllUsersCorrect || status == model.LevelStatusMultipleUsersCorrect {
@@ -148,4 +148,6 @@ func FinishLevel(ctx context.Context, logger *slog.Logger, gameID, levelID strin
 		logger.Error("failed to finish game level", log.Err(err))
 		return
 	}
+
+	notification.SendLevelFinishedNotification(ctx, logger, gameID, lastUserID, status, correctUsers)
 }

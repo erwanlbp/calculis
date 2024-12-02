@@ -117,7 +117,7 @@ func UserLevelAnswer(rw http.ResponseWriter, req *http.Request) {
 
 	if len(level.UsersAnswer) >= level.PlayersCount {
 		logger.Info("Finishing level ...")
-		game.FinishLevel(ctx, logger, body.GameID, body.LevelID)
+		game.FinishLevel(ctx, logger, body.GameID, body.LevelID, userId)
 	} else {
 		logger.Info("Level is not finished", slog.Int("answersCount", len(level.UsersAnswer)), slog.Int("playersCount", level.PlayersCount))
 	}

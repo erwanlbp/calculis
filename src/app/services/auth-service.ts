@@ -14,8 +14,8 @@ export class AuthService {
 
   public storeFCMToken(token: string): Promise<void> {
     return firstValueFrom(this.getUserId$().pipe(
-      switchMap(userId => updateDoc(doc(this.firestore, `users/${userId}`), { fcmToken: token })
-        .catch(err => setDoc(doc(this.firestore, `users/${userId}`), { fcmToken: token }))),
+      switchMap(userId => updateDoc(doc(this.firestore, `users/${userId}`), { userId, fcmToken: token })
+        .catch(err => setDoc(doc(this.firestore, `users/${userId}`), { userId, fcmToken: token }))),
     ))
   }
 
