@@ -1,0 +1,21 @@
+<div class="mobile-menu-container">
+
+  <mat-list class="mobile-menu-items">
+
+    <mat-list-item *ngFor="let item of menuItems">
+      <a mat-button routerLink="{{item.link}}" routerLinkActive="active" ariaCurrentWhenActive="page">
+        <mat-icon matListItemIcon [matTooltip]="item.label">{{ item.icon }}</mat-icon>
+      </a>
+    </mat-list-item>
+
+    <button mat-button *ngIf="true" title="Déconnexion">
+      <mat-icon [matTooltip]="'Deconnexion'">logout</mat-icon>
+    </button>
+
+  </mat-list>
+
+  <!--  <button mat-button *ngIf="!connected()" title="Connexion Google" (click)="login()">-->
+  <!--    <mat-icon>login</mat-icon>-->
+  <!--    Connexion-->
+  <!--  </button>-->
+</div>

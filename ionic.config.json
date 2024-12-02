@@ -1,9 +1,0 @@
-{
-  "name": "calculis",
-  "integrations": {
-    "cordova": {}
-  },
-  "type": "angular",
-  "id": "586d5619",
-  "hooks": {}
-}
