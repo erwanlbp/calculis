@@ -15,3 +15,12 @@
         </button>
     </mat-card-content>
 </mat-card>
+
+<mat-card *ngIf="connected() && isMobile()">
+    <mat-card-content>
+        <button mat-button (click)="logout()">
+            <mat-icon>logout</mat-icon>
+            Déconnexion
+        </button>
+    </mat-card-content>
+</mat-card>

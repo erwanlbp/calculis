@@ -11,8 +11,6 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MessagePayload, Messaging, onMessage } from '@angular/fire/messaging';
 import { MessagingService } from './services/messaging.service';
 import { UtilsService } from './services/utils.service';
-import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
-import { map } from 'rxjs';
 import { MobileMenuComponent } from './components/menu/mobile-menu/mobile-menu.component';
 import { MENU_ITEMS } from './components/menu/menu';
 
@@ -37,7 +35,6 @@ import { MENU_ITEMS } from './components/menu/menu';
 })
 export class AppComponent {
   authService: AuthService = inject(AuthService);
-  breakpointObserver: BreakpointObserver = inject(BreakpointObserver);
 
   title = 'calculis';
 
@@ -50,13 +47,8 @@ export class AppComponent {
   menuItems = MENU_ITEMS;
 
   constructor() {
-    this.connected = toSignal(this.authService.isConnected$(), {initialValue: false})
-    this.isMobile = toSignal(this.breakpointObserver.observe([Breakpoints.XSmall])
-      .pipe(
-        map(state => {
-          return state.matches;
-        })
-      ), {initialValue: true})
+    this.connected = toSignal(this.authService.isConnected$(), { initialValue: false })
+    this.isMobile = this.utilsService.isMobile()
 
     onMessage(this.messaging, (message: MessagePayload) => {
       console.log("My Firebase Cloud Message", message);

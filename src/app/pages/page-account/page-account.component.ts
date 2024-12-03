@@ -7,6 +7,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { UtilsService } from '../../services/utils.service';
 
 @Component({
   selector: 'app-page-account',
@@ -23,19 +24,26 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 })
 export class PageAccountComponent {
 
-  accountService = inject(AccountService)
-  authService = inject(AuthService)
+  private accountService = inject(AccountService)
+  private authService = inject(AuthService)
+  private utilsService = inject(UtilsService)
 
   email: Signal<string>;
   connected: Signal<boolean>;
+  isMobile: Signal<boolean>;
 
   constructor() {
     this.email = toSignal(this.authService.getUserEmail$(), { initialValue: '' });
     this.connected = toSignal(this.authService.isConnected$(), { initialValue: false })
+    this.isMobile = this.utilsService.isMobile()
   }
 
   deleteAccount() {
     this.accountService.deleteAccount();
+  }
+
+  logout() {
+    this.authService.logout()
   }
 
   askConfirm(): boolean {
