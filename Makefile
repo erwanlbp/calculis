@@ -9,6 +9,9 @@ decrypt: # Decrypt config files
 start: decrypt # Local start the app
 	npm run start
 
+start-fr: decrypt # Local start the app
+	npm run start-fr
+
 build-web: decrypt # Build web app in prod mode
 	npm run build
 
@@ -28,7 +31,7 @@ build-functions: # Build the local cmd to test everything compile
 	go -C ./functions build -o /dev/null cmd/main.go
 
 deploy-all-functions: # Deploy Go backend functions
-	make deploy-function-OnUserDelete 
+	make deploy-function-OnUserDelete
 	make deploy-function-WaitForOpponent
 	make deploy-function-UserLevelAnswer
 	make deploy-function-GetLevelContent
