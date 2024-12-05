@@ -1,18 +1,39 @@
 <div class="mobile-menu-container">
 
-  <mat-list class="mobile-menu-items">
+  <div class="mobile-menu-items">
 
-    <mat-list-item *ngFor="let item of menuItems">
-      <a mat-button routerLink="{{item.link}}" routerLinkActive="active" ariaCurrentWhenActive="page">
-        <mat-icon matListItemIcon [matTooltip]="item.label">{{ item.icon }}</mat-icon>
-      </a>
-    </mat-list-item>
-    <mat-list-item *ngIf="!connected()">
-      <button mat-button (click)="login()">
-        <mat-icon matListItemIcon>login</mat-icon>
-      </button>
-    </mat-list-item>
+    <div *ngFor="let item of menuItems"
+         [matTooltip]="item.label"
+         (click)="navigateTo(item.link)"
+         class="mobile-menu-item custom-btn"
+    >
+      <mat-icon matListItemIcon>
+        {{ item.icon }}
+      </mat-icon>
+      <span class="mobile-menu-item-label">{{ item.label }}</span>
+    </div>
 
-  </mat-list>
+    <!--    <span *ngFor="let item of menuItems">-->
+    <!--      <a mat-button-->
+    <!--         routerLink="{{item.link}}"-->
+    <!--         routerLinkActive="active"-->
+    <!--         ariaCurrentWhenActive="page"-->
+    <!--         class="mobile-menu-item"-->
+    <!--      >-->
+    <!--        <mat-icon matListItemIcon [matTooltip]="item.label">-->
+    <!--          {{ item.icon }}-->
+    <!--        </mat-icon>-->
+    <!--        <span>{{ item.label }}</span>-->
+    <!--      </a>-->
+    <!--    </span>-->
+
+    <!--    -->
+    <!--    <mat-list-item *ngIf="!connected()">-->
+    <!--      <button mat-button (click)="login()">-->
+    <!--        <mat-icon matListItemIcon>login</mat-icon>-->
+    <!--      </button>-->
+    <!--    </mat-list-item>-->
+
+  </div>
 
 </div>

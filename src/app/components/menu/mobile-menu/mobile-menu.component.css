@@ -2,9 +2,47 @@
   position: fixed;
   bottom: 0;
   width: 100%;
+  border-top: 1px solid;
+  background-color: lightgray;
 }
 
 .mobile-menu-items {
   display: flex;
   align-items: center;
+  justify-content: space-evenly;
+  padding: 8px 0 8px 0;
+}
+
+.mobile-menu-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 12px;
+}
+
+.mobile-menu-item-label {
+  display: flex;
+  align-items: center;
+  height: 12px;
+}
+
+
+.custom-btn {
+}
+
+.custom-btn:hover {
+  animation-name: rotate;
+  animation-duration: 0.7s;
+}
+
+@keyframes rotate {
+  0% {
+    transform: rotateY(0);
+  }
+  50% {
+    transform: rotateY(180deg);
+  }
+  100% {
+    transform: rotateY(0);
+  }
 }
