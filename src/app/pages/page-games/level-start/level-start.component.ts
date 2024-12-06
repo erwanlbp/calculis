@@ -1,17 +1,19 @@
-import { Component, computed, EventEmitter, inject, Input, OnInit, Output, Signal, signal, WritableSignal } from '@angular/core';
-import { AsyncPipe, JsonPipe } from '@angular/common';
-import { catchError, concatMap, EMPTY, filter, from, interval, map, Observable, Subject, switchMap, take, tap } from 'rxjs';
+import { Component, EventEmitter, inject, Input, OnInit, Output, signal, WritableSignal } from '@angular/core';
+import { AsyncPipe, JsonPipe, NgIf } from '@angular/common';
+import { catchError, EMPTY, filter, from, interval, map, Observable, switchMap, take, tap } from 'rxjs';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { emptyLevel, GameLevel } from '../../../model/game/game-level';
-import { toSignal } from '@angular/core/rxjs-interop';
 import { GamesService } from '../../../services/games.service';
-import { emptyUserGame, UserGame } from '../../../model/game/user-game';
 import { UtilsService } from '../../../services/utils.service';
+import { UserGame } from '../../../model/game/user-game';
+import { goDurationToMs } from '../../../utils/time';
 
 @Component({
   selector: 'app-level-start',
   standalone: true,
   imports: [
-    JsonPipe, AsyncPipe,
+    MatProgressSpinnerModule,
+    AsyncPipe,
   ],
   templateUrl: './level-start.component.html',
   styleUrl: './level-start.component.css'
@@ -25,32 +27,57 @@ export class LevelStartComponent implements OnInit {
   private gameService = inject(GamesService)
   private utilsService = inject(UtilsService)
 
-  level: Observable<GameLevel> = EMPTY
+  level: GameLevel = emptyLevel
 
-  currentNumber: WritableSignal<number> = signal(0);
+  progress$: Observable<number> = EMPTY;
+  currentNumber$: Observable<number> = EMPTY;
+  isOdd: boolean = true;
 
-  constructor() {
-  }
+  constructor() { }
 
   ngOnInit() {
-    this.level = from(this.gameService.getLevelContent(this.game.gameId, this.game.currentLevelId))
+    const level$ = from(this.gameService.getLevelContent(this.game.gameId, this.game.currentLevelId))
       .pipe(
         catchError((err) => {
           this.utilsService.showToast('Le niveau a déjà été joué !');
           return EMPTY;
         }),
         filter(level => !!level),
+        tap(level => this.level = level),
+        tap(x => console.log('fetched level', this.level)),
       );
-    this.level.pipe(
-      filter(level => !!level),
-      switchMap(level => from(level.numbers.numbers)),
-      concatMap((num, index) => {
-        this.currentNumber.set(num);
-        return interval(1000).pipe(take(1));
-      })
-    ).subscribe({
-      complete: () => this.endDisplay.emit()
-    })
+
+    this.currentNumber$ = this.createCurrentNumberObservable(level$)
+    this.progress$ = this.createProgressBarObservable(this.currentNumber$)
+
+    this.currentNumber$.subscribe({ complete: () => this.endDisplay.emit() })
   }
 
+  private createCurrentNumberObservable(level$: Observable<GameLevel>): Observable<number> {
+    return level$.pipe(
+      switchMap(level => {
+        const printedDuration = goDurationToMs(level.config.printedDuration);
+        return interval(printedDuration).pipe(
+          take(level.numbers.numbers.length),
+          map(index => level.numbers.numbers[index]),
+          tap(() => this.isOdd = !this.isOdd)
+        );
+      })
+    );
+  }
+
+  private createProgressBarObservable(number: Observable<number>,): Observable<number> {
+    return number.pipe(
+      switchMap(() => {
+        const printedDuration = goDurationToMs(this.level.config.printedDuration);
+        return interval(30).pipe(
+          take(printedDuration / 30),
+          map(tick => {
+            const val = (tick * 30) / printedDuration * 100
+            return this.isOdd ? val : 100 - val
+          }),
+        );
+      })
+    );
+  }
 }
