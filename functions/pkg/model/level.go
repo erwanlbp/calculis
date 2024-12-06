@@ -25,6 +25,8 @@ type GameLevel struct {
 	Numbers      LevelNumbers `firestore:"numbers,omitempty"`
 
 	UsersAnswer map[string]UserAnswer `firestore:"usersAnswer,omitempty"`
+	// If code is already generated, it means user already fetched level content, that's forbidden
+	UsersFetchedLevel map[string]bool `firestore:"usersAnswered,omitempty"`
 }
 
 func (l GameLevel) CorrectAnswer() int {

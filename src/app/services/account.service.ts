@@ -1,42 +1,32 @@
-import { Injectable } from '@angular/core';
-import { AuthService } from './auth.service';
-import { AngularFirestore } from '@angular/fire/firestore';
+import { inject, Injectable } from '@angular/core';
+import { deleteDoc, doc, Firestore } from '@angular/fire/firestore';
+import { filter, firstValueFrom, map, take } from 'rxjs';
+import { AuthService } from './auth-service';
 import { UtilsService } from './utils.service';
-import { map, take } from 'rxjs/operators';
 
 @Injectable({
-    providedIn: 'root'
+  providedIn: 'root'
 })
 export class AccountService {
 
-    constructor(
-        private firestore: AngularFirestore,
-        private authService: AuthService,
-        private utilsService: UtilsService,
-    ) {
-    }
+  private authService = inject(AuthService);
+  private firestore = inject(Firestore);
+  private utilsService = inject(UtilsService);
 
-    updateAccountEmail(email: string): Promise<void> {
-        return this.authService.getUserId$().pipe(
-            take(1),
-            map(userId => this.firestore.doc(`users/${userId}`))
-        ).toPromise()
-            .then(doc => doc.set({ email }));
-    }
-
-    deleteAccount(): Promise<void> {
-        return this.authService.getUserId$().pipe(
-            take(1),
-            map(userId => {
-                if (!userId) {
-                    return null;
-                }
-                return this.firestore.doc(`users/${userId}`)
-            }),
-        ).toPromise()
-            .then(doc => doc.delete())
-            .then(() => this.utilsService.showToast('Compte supprimé'))
-            .then(() => this.authService.logout())
-            .catch(err => this.utilsService.showToast('Echec'));
-    }
+  deleteAccount(): Promise<void> {
+    return firstValueFrom(this.authService.getUserId$().pipe(
+      take(1),
+      map(userId => {
+        if (!userId) {
+          return null;
+        }
+        return doc(this.firestore, `users/${userId}`)
+      }),
+      filter(doc => !!doc)
+    ))
+      .then(doc => deleteDoc(doc))
+      .then(() => this.utilsService.showToast('Compte supprimé'))
+      .then(() => this.authService.logout())
+      .catch(err => this.utilsService.showToast('Echec'));
+  }
 }

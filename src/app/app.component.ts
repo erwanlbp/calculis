@@ -1,64 +1,73 @@
-import { Component, OnInit } from '@angular/core';
-import { Platform } from '@ionic/angular';
-import { SplashScreen } from '@ionic-native/splash-screen/ngx';
-import { StatusBar } from '@ionic-native/status-bar/ngx';
-import { RoutePathConstants } from './constants/route.constants';
-import { AuthService } from './services/auth.service';
-import { Observable } from 'rxjs';
-import * as jsonPackage from './../../package.json';
-import * as moment from 'moment';
-import { UtilsService } from "./services/utils.service";
-import { AccountService } from './services/account.service';
+import { CommonModule } from '@angular/common';
+import { Component, inject, Signal } from '@angular/core';
+import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { AuthService } from './services/auth-service';
+import { MatListModule } from '@angular/material/list';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MessagePayload, Messaging, onMessage } from '@angular/fire/messaging';
+import { MessagingService } from './services/messaging.service';
+import { UtilsService } from './services/utils.service';
+import { MobileMenuComponent } from './components/menu/mobile-menu/mobile-menu.component';
+import { MENU_ITEMS } from './components/menu/menu';
+
 
 @Component({
-    selector: 'app-root',
-    templateUrl: 'app.component.html',
-    styleUrls: ['app.component.scss']
+  selector: 'app-root',
+  imports: [
+    CommonModule,
+    RouterOutlet,
+    RouterLink,
+    RouterLinkActive,
+    MatSidenavModule,
+    MatListModule,
+    MatButtonModule,
+    MatIconModule,
+    MatToolbarModule,
+    MobileMenuComponent,
+  ],
+  templateUrl: './app.component.html',
+  styleUrl: './app.component.css',
+  standalone: true,
 })
-export class AppComponent implements OnInit {
+export class AppComponent {
+  authService: AuthService = inject(AuthService);
 
-    connected$: Observable<boolean>;
-    version: string = jsonPackage.version;
+  title = 'calculis';
 
-    pages = [
-        {title: 'Comment jouer ?', url: RoutePathConstants.HOME, icon: 'help'},
-        {title: 'Jeu', url: RoutePathConstants.PLAY, icon: 'logo-game-controller-b'},
-        {title: 'Historique', url: RoutePathConstants.GAMES_HISTORY, icon: 'stats'},
-        {title: 'Scores', url: RoutePathConstants.SCORES, icon: 'podium'},
-        {title: 'Compte', url: RoutePathConstants.ACCOUNT, icon: 'contact'},
-    ];
+  messagingComponent = inject(MessagingService)
+  utilsService = inject(UtilsService)
 
-    constructor(
-        private platform: Platform,
-        private splashScreen: SplashScreen,
-        private statusBar: StatusBar,
-        private authService: AuthService,
-        private utilsService: UtilsService,
-        private accountService: AccountService,
-    ) {
-        this.initializeApp();
-    }
+  connected: Signal<boolean>;
+  messaging = inject(Messaging)
+  isMobile: Signal<boolean>
+  menuItems = MENU_ITEMS;
 
-    initializeApp() {
-        moment.locale('fr-FR');
-        this.platform.ready().then(() => {
-            this.statusBar.styleDefault();
-            this.splashScreen.hide();
-        });
-    }
+  constructor() {
+    this.connected = toSignal(this.authService.isConnected$(), { initialValue: false })
+    this.isMobile = this.utilsService.isMobile()
 
-    ngOnInit() {
-        this.connected$ = this.authService.isConnected$();
-    }
+    onMessage(this.messaging, (message: MessagePayload) => {
+      console.log("My Firebase Cloud Message", message);
+      if (message && message.data && message.data['type'] == 'game_created') {
+        this.utilsService.showToast(`La game ${message.data['gameId']} est prete à jouer !`)
+      } else {
+        console.log('received notif', message)
+      }
+    })
+  }
 
-    logout() {
-        this.authService.logout();
-    }
+  login() {
+    this.authService.login().subscribe(r => {
+      console.log(r)
+    });
+  }
 
-    login() {
-        this.authService.login()
-            .then(user => this.accountService.updateAccountEmail(user.user.email))
-            .then(() => this.utilsService.showToast('Connexion réussie'))
-            .catch(() => this.utilsService.showToast('Echec de la connexion'));
-    }
+  logout() {
+    this.authService.logout();
+  }
+
 }

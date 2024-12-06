@@ -1,39 +1,25 @@
-import { Injectable } from '@angular/core';
-import { AlertController, ToastController } from '@ionic/angular';
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import { inject, Injectable, Signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { map } from 'rxjs';
 
 @Injectable({
     providedIn: 'root'
 })
 export class UtilsService {
 
-    constructor(
-        private alertController: AlertController,
-        private toastController: ToastController,
-    ) {
+    private snackBar = inject(MatSnackBar);
+    private breakpointObserver: BreakpointObserver = inject(BreakpointObserver);
+
+    showToast(msg: string) {
+        this.snackBar.open(msg, 'Fermer', { duration: 4000 });
     }
 
-    async askForConfirmation(): Promise<boolean> {
-        return new Promise((resolve, reject) => {
-            this.alertController.create({
-                header: 'Etes vous sur ?',
-                buttons: [
-                    {
-                        text: 'Annuler',
-                        role: 'cancel',
-                        cssClass: 'secondary',
-                        handler: () => resolve(false)
-                    },
-                    {
-                        text: 'Confirmer',
-                        handler: () => resolve(true)
-                    }
-                ]
-            }).then(alert => alert.present());
-        });
-    }
-
-    async showToast(msg: string) {
-        const toast = await this.toastController.create({message: msg, duration: 4000});
-        await toast.present();
+    isMobile(): Signal<boolean> {
+        return toSignal(
+            this.breakpointObserver.observe([Breakpoints.XSmall]).pipe(map(state => { return state.matches; })),
+            { initialValue: true },
+        )
     }
 }

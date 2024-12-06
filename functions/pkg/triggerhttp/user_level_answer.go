@@ -9,8 +9,6 @@ import (
 	"net/http"
 
 	firestorego "cloud.google.com/go/firestore"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 
 	"github.com/erwanlbp/calculis/pkg/auth"
 	"github.com/erwanlbp/calculis/pkg/firestore"
@@ -34,6 +32,7 @@ func UserLevelAnswer(rw http.ResponseWriter, req *http.Request) {
 
 	var data struct {
 		Data struct {
+			Forfeit bool   `json:"forfeit"`
 			GameID  string `json:"game_id"`
 			LevelID string `json:"level_id"`
 			Answer  int    `json:"answer"`
@@ -56,22 +55,20 @@ func UserLevelAnswer(rw http.ResponseWriter, req *http.Request) {
 
 	logger := slog.Default().With(log.GameID(body.GameID), log.LevelID(body.LevelID), log.UserID(userId))
 
-	// Validate user belongs to the game
-	_, err := firestore.Client.Doc(fmt.Sprintf("games/%s/gameusers/%s", body.GameID, userId)).Get(ctx)
-	if status.Code(err) == codes.NotFound {
-		httphelper.WriteError(rw, http.StatusForbidden, errors.New("level not found"))
-		return
-	}
-	if err != nil {
+	if ok, _, err := firestore.UserBelongsToGame(ctx, userId, body.GameID, body.LevelID); err != nil {
 		logger.Error("failed to check if user belongs to the game", log.Err(err))
 		httphelper.WriteError(rw, http.StatusInternalServerError, fmt.Errorf("failed to check if user belongs to the game"))
+		return
+	} else if !ok {
+		logger.Error("user does not belong to game")
+		httphelper.WriteError(rw, http.StatusForbidden, errors.New("level not found"))
 		return
 	}
 
 	// Get level's doc
 	level, levelRef, err := game.GetGameLevel(ctx, logger, body.GameID, body.LevelID)
-	if errors.Is(err, game.ErrGameLevelNotFound) {
-		httphelper.WriteError(rw, http.StatusNotFound, game.ErrGameLevelNotFound)
+	if errors.Is(err, game.ErrNotFound) {
+		httphelper.WriteError(rw, http.StatusNotFound, game.ErrNotFound)
 		return
 	}
 	if err != nil {
@@ -79,9 +76,19 @@ func UserLevelAnswer(rw http.ResponseWriter, req *http.Request) {
 		httphelper.WriteError(rw, http.StatusInternalServerError, fmt.Errorf("cannot find game: %w", err))
 		return
 	}
-	level.UsersAnswer[userId] = model.UserAnswer{
-		Correct: body.Answer == level.CorrectAnswer(),
+
+	// If level already contains UsersAnswer for user, fail
+	if _, exists := level.UsersAnswer[userId]; exists {
+		logger.Error("user already answered")
+		httphelper.WriteError(rw, http.StatusForbidden, errors.New("already_answered"))
+		return
 	}
+
+	level.UsersAnswer[userId] = model.UserAnswer{
+		Correct: !body.Forfeit && body.Answer == level.CorrectAnswer(),
+	}
+	// Just for security
+	level.UsersFetchedLevel[userId] = true
 
 	if err := firestore.Client.RunTransaction(ctx, func(ctx context.Context, tx *firestorego.Transaction) error {
 		// Update game level
@@ -110,13 +117,13 @@ func UserLevelAnswer(rw http.ResponseWriter, req *http.Request) {
 
 	if len(level.UsersAnswer) >= level.PlayersCount {
 		logger.Info("Finishing level ...")
-		game.FinishLevel(ctx, logger, body.GameID, body.LevelID)
+		game.FinishLevel(ctx, logger, body.GameID, body.LevelID, userId)
 	} else {
 		logger.Info("Level is not finished", slog.Int("answersCount", len(level.UsersAnswer)), slog.Int("playersCount", level.PlayersCount))
 	}
 
 	httphelper.WriteJSON(rw, http.StatusOK, map[string]interface{}{
-		"correct":        body.Answer == level.CorrectAnswer(),
+		"correct":        !body.Forfeit && body.Answer == level.CorrectAnswer(),
 		"correct_answer": level.CorrectAnswer(),
 	})
 }

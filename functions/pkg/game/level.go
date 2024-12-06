@@ -7,36 +7,12 @@ import (
 	"log/slog"
 
 	firestorego "cloud.google.com/go/firestore"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 
 	"github.com/erwanlbp/calculis/pkg/firestore"
 	"github.com/erwanlbp/calculis/pkg/log"
 	"github.com/erwanlbp/calculis/pkg/model"
+	"github.com/erwanlbp/calculis/pkg/notification"
 )
-
-var ErrGameLevelNotFound = errors.New("game level not found")
-
-func GetGameLevel(ctx context.Context, logger *slog.Logger, gameID, levelID string) (*model.GameLevel, *firestorego.DocumentRef, error) {
-	levelRef := firestore.Client.Doc(fmt.Sprintf("games/%s/gamelevels/%s", gameID, levelID))
-	levelDoc, err := levelRef.Get(ctx)
-	if status.Code(err) == codes.NotFound {
-		return nil, nil, ErrGameLevelNotFound
-	}
-	if err != nil {
-		logger.Error("failed to find level doc", log.Err(err))
-		return nil, nil, fmt.Errorf("failed to find level")
-	}
-	var level model.GameLevel
-	if err := levelDoc.DataTo(&level); err != nil {
-		logger.Error("failed to unmarshal level doc", log.Err(err), slog.Any("data", levelDoc.Data()))
-		return nil, nil, fmt.Errorf("failed to find level")
-	}
-	if level.UsersAnswer == nil {
-		level.UsersAnswer = make(map[string]model.UserAnswer)
-	}
-	return &level, levelRef, nil
-}
 
 type GenerateLevelDto struct {
 	GameId       string
@@ -69,12 +45,12 @@ func GenerateLevel(ctx context.Context, logger *slog.Logger, tx *firestorego.Tra
 	return levelRef.ID, nil
 }
 
-func FinishLevel(ctx context.Context, logger *slog.Logger, gameID, levelID string) {
+func FinishLevel(ctx context.Context, logger *slog.Logger, gameID, levelID string, lastUserID string) {
 	// Logger contains gameID and levelID already
 	logger = logger.With(log.Caller("FinishLevel"))
 
 	level, levelRef, err := GetGameLevel(ctx, logger, gameID, levelID)
-	if errors.Is(err, ErrGameLevelNotFound) {
+	if errors.Is(err, ErrNotFound) {
 		logger.Error("cannot find game level", log.Err(err))
 		return
 	}
@@ -88,15 +64,14 @@ func FinishLevel(ctx context.Context, logger *slog.Logger, gameID, levelID strin
 	}
 	level.Status = model.StatusPlayed
 
+	status, correctUsers := level.StatusAfterFinish()
+	logger = logger.With(log.EndLevelStatus(status))
+
 	if err := firestore.Client.RunTransaction(ctx, func(ctx context.Context, tx *firestorego.Transaction) error {
 		if err := tx.Set(levelRef, level); err != nil {
 			return fmt.Errorf("failed to update level doc: %w", err)
 		}
 		logger.Info("Updated game level", log.Status(level.Status))
-
-		status, correctUsers := level.StatusAfterFinish()
-
-		logger = logger.With(log.EndLevelStatus(status))
 
 		var nextLevelID string
 		if status == model.LevelStatusAllUsersCorrect || status == model.LevelStatusMultipleUsersCorrect {
@@ -173,4 +148,6 @@ func FinishLevel(ctx context.Context, logger *slog.Logger, gameID, levelID strin
 		logger.Error("failed to finish game level", log.Err(err))
 		return
 	}
+
+	notification.SendLevelFinishedNotification(ctx, logger, gameID, lastUserID, status, correctUsers)
 }
