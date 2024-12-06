@@ -1,3 +1,8 @@
+<mat-progress-spinner mode="determinate" [value]="progress$ | async"></mat-progress-spinner>
+
 <div>
   {{ this.currentNumber() }}
+  {{ this.currentNumber$ | async }}
 </div>
+
+<div>{{level | json}}</div>
