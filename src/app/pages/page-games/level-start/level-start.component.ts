@@ -14,8 +14,6 @@ import { goDurationToMs } from '../../../utils/time';
   imports: [
     MatProgressSpinnerModule,
     AsyncPipe,
-    NgIf,
-    JsonPipe,
   ],
   templateUrl: './level-start.component.html',
   styleUrl: './level-start.component.css'
@@ -31,7 +29,6 @@ export class LevelStartComponent implements OnInit {
 
   level: GameLevel = emptyLevel
 
-  currentNumber: WritableSignal<number | undefined> = signal(undefined);
   progress$: Observable<number> = EMPTY;
   currentNumber$: Observable<number> = EMPTY;
   isOdd: boolean = true;
@@ -53,37 +50,7 @@ export class LevelStartComponent implements OnInit {
     this.currentNumber$ = this.createCurrentNumberObservable(level$)
     this.progress$ = this.createProgressBarObservable(this.currentNumber$)
 
-    this.currentNumber$.subscribe({
-      next: x => {
-        this.isOdd = !this.isOdd;
-        console.log('n', x)
-      },
-      complete: () => this.endDisplay.emit()
-    })
-
-    //     switchMap(() => timer(0, goDurationToMs(this.level.config.printedDuration) + 30)),
-    //     tap(i => console.log('i', i)),
-    //     take(this.level.config.serieSize),
-    //     map(i => this.level.numbers.numbers[i]),
-    //     share(),
-
-    // this.currentNumber$ = number$.pipe(
-    //   tap(x => console.log('n', x)),
-    //   tap(() => this.currentNumber.set( undefined)),
-    //   delay(30),
-    // );
-
-    // number$.subscribe({ complete: () => this.endDisplay.emit() });
-
-    // this.progress$ = number$.pipe(
-    //   tap(x => console.log('p', x)),
-    //   tap(() => this.isOdd = !this.isOdd),
-    //   switchMap(() => interval(30)),
-    //   map(i => {
-    //     const val = i / (goDurationToMs(this.level.config.printedDuration) / 30);
-    //     return this.isOdd ? val : 1 - val;
-    //   }),
-    // );
+    this.currentNumber$.subscribe({ complete: () => this.endDisplay.emit() })
   }
 
   private createCurrentNumberObservable(level$: Observable<GameLevel>): Observable<number> {
@@ -91,8 +58,9 @@ export class LevelStartComponent implements OnInit {
       switchMap(level => {
         const printedDuration = goDurationToMs(level.config.printedDuration);
         return interval(printedDuration).pipe(
-          take(level.config.serieSize),
-          map(index => level.numbers.numbers[index])
+          take(level.numbers.numbers.length),
+          map(index => level.numbers.numbers[index]),
+          tap(() => this.isOdd = !this.isOdd)
         );
       })
     );
@@ -107,7 +75,7 @@ export class LevelStartComponent implements OnInit {
           map(tick => {
             const val = (tick * 30) / printedDuration * 100
             return this.isOdd ? val : 100 - val
-          })
+          }),
         );
       })
     );
